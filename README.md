@@ -14,7 +14,7 @@ Agar kerja sama tetap rapi dan lancar, ikuti aturan berikut saat mengunggah atau
   
 ### ✍️ 3. Gunakan Commit Message yang Jelas
 Gunakan deskripsi format yang jelas agar bisa dipahami ada update terakhir contohnya:
-- feat: tambah halaman profil
+- feat: tambah halaman profil bagian sidebar 
 - fix: perbaiki bug pada form login
 - update: ubah tampilan dashboard
 
