@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
-import 'saved_jobs_page.dart';
+import 'screens/home_screens.dart';
+import 'screens/saved_jobs_page.dart';
 
 void main() {
-  runApp(const JobApp());
+  runApp(const MyApp());
 }
 
-class JobApp extends StatelessWidget {
-  const JobApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lowongan Tersimpan',
       debugShowCheckedModeBanner: false,
+      title: 'Koneksibilitas',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.indigo,
         scaffoldBackgroundColor: Colors.white,
         fontFamily: 'Inter',
       ),
-      home: const SavedJobsPage(),
+      home: const HomeScreens(), 
+      routes: {
+        '/saved-jobs': (context) => const SavedJobsPage(),
+      },
     );
   }
 }
