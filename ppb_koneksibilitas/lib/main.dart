@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screens.dart';
 import 'screens/saved_jobs_page.dart';
+import 'screens/login_screens.dart';
+import 'screens/register_screens.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,9 +21,15 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         fontFamily: 'Inter',
       ),
-      home: const HomeScreens(), 
+      
+      // Halaman pertama kali dijalankan
+      home: const LoginScreen(),
+
+      // Daftar route
       routes: {
+        '/home': (context) => const HomeScreens(),
         '/saved-jobs': (context) => const SavedJobsPage(),
+        '/register': (context) => const RegisterScreen(),
       },
     );
   }
