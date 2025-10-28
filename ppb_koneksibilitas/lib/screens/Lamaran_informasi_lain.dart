@@ -83,7 +83,7 @@ class _InformasiLainPageState extends State<InformasiLainPage> {
               ),
             ),
             const SizedBox(height: 24),
-
+            //pemilihan jenis disabilitas
             labelWajib("Jenis Disabilitas"),
             const SizedBox(height: 6),
             Row(
