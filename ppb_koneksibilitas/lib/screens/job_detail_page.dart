@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'lamaran_data_pribadi.dart'; 
 
 class JobDetailPage extends StatelessWidget {
   final String title;
@@ -84,7 +85,14 @@ class JobDetailPage extends StatelessWidget {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const DataPribadiPage(),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF3B82F6),
                   shape: RoundedRectangleBorder(
