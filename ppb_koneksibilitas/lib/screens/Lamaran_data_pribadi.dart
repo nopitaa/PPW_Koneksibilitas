@@ -178,6 +178,7 @@ class _DataPribadiPageState extends State<DataPribadiPage> {
                 ),
                 const SizedBox(height: 18),
 
+                // email
                 labelWajib("Alamat Email"),
                 const SizedBox(height: 6),
                 TextField(

@@ -118,6 +118,7 @@ class _RiwayatPendidikanPageState extends State<RiwayatPendidikanPage> {
               ),
               const SizedBox(height: 18),
 
+              //jurusan
               labelWajib("Jurusan"),
               const SizedBox(height: 6),
               TextFormField(
