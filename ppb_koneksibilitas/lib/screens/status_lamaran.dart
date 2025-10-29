@@ -36,7 +36,9 @@ class _StatusLamaranPageState extends State<StatusLamaranPage> {
   }
 
   Future<void> _loadLamaranData() async {
-    final String response = await rootBundle.loadString('assets/status_lamaran.json');
+    final String response = await rootBundle.loadString(
+      'assets/status_lamaran.json',
+    );
     final data = json.decode(response);
     setState(() {
       lamaranList = data;
@@ -150,6 +152,7 @@ class _StatusLamaranPageState extends State<StatusLamaranPage> {
             );
           }).toList(),
         ),
+        bottomNavigationBar: const AppBottomNav(currentIndex: 2),
       ),
     );
   }
