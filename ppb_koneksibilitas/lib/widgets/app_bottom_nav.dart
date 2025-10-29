@@ -16,19 +16,29 @@ class AppBottomNav extends StatelessWidget {
 
     return BottomNavigationBar(
       currentIndex: currentIndex,
-      onTap: (i) {
-        if (i == 1) {
-          if (ModalRoute.of(context)?.settings.name != '/saved-jobs') {
-            Navigator.pushNamed(context, '/saved-jobs');
-          }
-          return;
-        }
-        onTabChanged?.call(i);
-      },
       type: BottomNavigationBarType.fixed,
       selectedItemColor: primary,
       unselectedItemColor: const Color(0xFF9CA3AF),
       showUnselectedLabels: true,
+      onTap: (index) {
+        // Hindari reload ke halaman yang sama
+        if (index == currentIndex) return;
+
+        switch (index) {
+          case 0:
+            Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+            break;
+          case 1:
+            Navigator.pushNamedAndRemoveUntil(context, '/saved-jobs', (route) => false);
+            break;
+          case 2:
+            Navigator.pushNamedAndRemoveUntil(context, '/status-lamaran', (route) => false);
+            break;
+          case 3:
+            Navigator.pushNamedAndRemoveUntil(context, '/profile', (route) => false);
+            break;
+        }
+      },
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
         BottomNavigationBarItem(icon: Icon(Icons.bookmark_border), label: 'Simpan'),
