@@ -31,10 +31,11 @@ class _HomeScreensState extends State<HomeScreens> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: AppBottomNav(
-        currentIndex: _currentTab,
-        onTabChanged: (i) => setState(() => _currentTab = i),
-      ),
+      // bottomNavigationBar: AppBottomNav(
+      //   currentIndex: _currentTab,
+      //   onTabChanged: (i) => setState(() => _currentTab = i),
+      // ),
+      bottomNavigationBar: const AppBottomNav(currentIndex: 0),
       body: SafeArea(
         child: Column(
           children: [

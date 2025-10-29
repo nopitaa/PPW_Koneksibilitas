@@ -5,6 +5,7 @@ import 'screens/login_screens.dart';
 import 'screens/register_screens.dart';
 import 'screens/status_lamaran.dart';
 
+import 'screens/profile_page.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -31,6 +32,8 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomeScreens(),
         '/saved-jobs': (context) => const SavedJobsPage(),
         '/register': (context) => const RegisterScreen(),
+        
+        '/profile': (context) => const ProfilePage(),
         '/status-lamaran': (context) => const StatusLamaranPage(),
       },
     );
