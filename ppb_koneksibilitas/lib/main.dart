@@ -3,6 +3,7 @@ import 'screens/home_screens.dart';
 import 'screens/saved_jobs_page.dart';
 import 'screens/login_screens.dart';
 import 'screens/register_screens.dart';
+import 'screens/status_lamaran.dart';
 
 import 'screens/profile_page.dart';
 void main() {
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         fontFamily: 'Inter',
       ),
-      
+
       // Halaman pertama kali dijalankan
       home: const LoginScreen(),
 
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         
         '/profile': (context) => const ProfilePage(),
+        '/status-lamaran': (context) => const StatusLamaranPage(),
       },
     );
   }
