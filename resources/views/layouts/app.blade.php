@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>@yield('title','KONEKSIBILITAS')</title>
+
+  {{-- Bootstrap CDN --}}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  {{-- Font Plus Jakarta Sans --}}
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --brand:#0d6efd;
+      --muted:#6c757d;
+      --surface:#f8f9fb;
+      --radius:18px;
+      --radius-sm:12px;
+      --content-w:980px;
+    }
+    body {
+      font-family:'Plus Jakarta Sans',sans-serif;
+      background-color:#fff;
+    }
+    .container-narrow{ max-width: var(--content-w); margin:0 auto; }
+    .brand { font-weight:700; letter-spacing:.3px; color:var(--brand); }
+    .brand:hover { color:#0b5ed7; text-decoration:none; }
+    .nav-link {
+      font-weight:500;
+      color:#333;
+      font-size: 0.875rem;
+      transition: all .2s;
+    }
+    .nav-link:hover {
+      color: var(--brand);
+    }
+    .nav-link.active,
+    .nav-link:focus,
+    .nav-link:active {
+      color: var(--brand) !important;
+      font-weight:600;
+    }
+    .avatar{ width:120px; height:120px; border-radius:50%; object-fit:cover; }
+    .card-soft{ background:#fff; border:1px solid #edf1f5; border-radius: var(--radius); }
+    .pill{ border-radius:999px; padding:.45rem 1rem; font-weight:500; }
+    .doc-row{ background:var(--surface); border-radius: var(--radius-sm); padding:1rem 1.25rem; }
+    .doc-row + .doc-row{ margin-top:.85rem; }
+    .footer-min{ color:var(--muted); font-size:.95rem; }
+    .page-gutter{ padding-inline: min(5vw, 24px); }
+    .search-input {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      width: 240px;
+    }
+    .search-input:focus {
+      outline: 2px solid var(--brand);
+    }
+  </style>
+
+  @stack('head')
+</head>
+
+<body class="bg-white">
+
+  {{-- Navbar --}}
+  <nav class="navbar navbar-expand-md bg-white border-bottom shadow-sm sticky-top">
+    <div class="container page-gutter d-flex align-items-center justify-content-between">
+      {{-- Logo --}}
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+        <span class="text-primary fs-4">✦</span>
+        <span class="brand">KONEKSIBILITAS</span>
+      </a>
+
+      {{-- Search (Hanya muncul jika @section('search') didefinisikan) --}}
+      @hasSection('search')
+        <div class="d-none d-md-block">
+          @yield('search')
+        </div>
+      @endif
+
+      {{-- Toggle for mobile --}}
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      {{-- Navbar menu --}}
+        <div class="collapse navbar-collapse justify-content-end" id="navMain">
+        <ul class="navbar-nav gap-2">
+             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
+                Beranda
+                </a>
+            </li>
+            <li class="nav-item">
+                 <a class="nav-link {{ request()->is('saved') ? 'active' : '' }}" href="#">Simpan</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('status') ? 'active' : '' }}" href="#">Status</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('profile.*') ? 'active' : '' }}" href="{{ route('profile.show') }}">
+                Profile
+                </a>
+            </li>
+        </ul>
+    </div>
+    </div>
+  </nav>
+
+  {{-- Main Content --}}
+  <main class="py-5 page-gutter">
+    <div class="container-narrow">
+      @yield('content')
+    </div>
+  </main>
+
+  {{-- Footer --}}
+  <footer class="py-4 border-top">
+    <div class="container text-center footer-min">
+      © 2025 koneksibilitas. Hak cipta dilindungi
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  @stack('body')
+</body>
+</html>
