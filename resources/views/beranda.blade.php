@@ -27,7 +27,7 @@
           <li><a href="#" class="text-blue-600 font-semibold">Beranda</a></li>
           <li><a href="#" class="hover:text-blue-500">Simpan</a></li>
           <li><a href="#" class="hover:text-blue-500">Status</a></li>
-          <li><a href="#" class="hover:text-blue-500">Profile</a></li>
+          <li><a href="{{ route('profile.show') }}" class="btn btn-primary px-4 py-2 rounded-pill">Profile</a></li>
         </ul>
       </div>
     </div>
