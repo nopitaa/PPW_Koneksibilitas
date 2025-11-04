@@ -10,24 +10,23 @@
 
     <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
+            {{-- 🔹 Link Dashboard Perusahaan --}}
             <li class="nav-item">
-                <a class="nav-link" href="/">
+                <a class="nav-link {{ Request::is('perusahaan/dashboard') ? 'active' : '' }}" href="/perusahaan/dashboard">
                     <i class="ni ni-tv-2 text-dark text-sm opacity-10 me-2"></i>
                     <span class="nav-link-text ms-1">Dashboard</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/">
-                    <i class="ni ni-books text-dark text-sm opacity-10 me-2"></i>
-                    <span class="nav-link-text ms-1">Dashboard Perusahaan</span>
-                </a>
-            </li>
+
+            {{--  Link Data Lowongan --}}
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('informasi-lowongan') ? 'active' : '' }}" href="/informasi-lowongan">
                     <i class="ni ni-hat-3 text-dark text-sm opacity-10 me-2"></i>
                     <span class="nav-link-text ms-1">Data lowongan</span>
                 </a>
             </li>
+
+            {{--  Link Logout --}}
             <li class="nav-item">
                 <a class="nav-link" href="/">
                     <i class="ni ni-logout text-dark text-sm opacity-10 me-2"></i>
