@@ -192,10 +192,10 @@
                 Beranda
                 </a>
             </li>
-            <li class="nav-item">
-                 <a class="nav-link {{ request()->is('saved') ? 'active' : '' }}" href="#">Simpan</a>
-            </li>
-            <li class="nav-item">
+             <a class="nav-link {{ request()->routeIs('lowongan_tersimpan') ? 'active' : '' }}" href="{{ route('lowongan_tersimpan') }}">
+                Simpan
+              </a>
+            <a class="nav-item">
                 <a class="nav-link {{ request()->is('status') ? 'active' : '' }}" href="#">Status</a>
             </li>
             <li class="nav-item">
