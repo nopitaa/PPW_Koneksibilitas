@@ -163,51 +163,42 @@
 
 <body class="bg-white">
 
-  {{-- Navbar --}}
-  <nav class="navbar navbar-expand-md bg-white border-bottom shadow-sm sticky-top">
-    <div class="container page-gutter d-flex align-items-center justify-content-between">
-      {{-- Logo --}}
-      <a class="navbar-brand d-flex align-items-center gap-2" href="/">
-        <span class="text-primary fs-4">✦</span>
-        <span class="brand">KONEKSIBILITAS</span>
-      </a>
+{{-- Navbar (bisa di-override) --}}
+@section('navbar')
+<nav class="navbar navbar-expand-md bg-white border-bottom shadow-sm sticky-top">
+  <div class="container page-gutter d-flex align-items-center justify-content-between">
+    {{-- Logo --}}
+    <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+      <span class="text-primary fs-4">✦</span>
+      <span class="brand">KONEKSIBILITAS</span>
+    </a>
 
-      {{-- Search (Hanya muncul jika @section('search') didefinisikan) --}}
-      @hasSection('search')
-        <div class="d-none d-md-block">
-          @yield('search')
-        </div>
-      @endif
+    {{-- Search (Hanya muncul jika @section('search') didefinisikan) --}}
+    @hasSection('search')
+      <div class="d-none d-md-block">
+        @yield('search')
+      </div>
+    @endif
 
-      {{-- Toggle for mobile --}}
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-      {{-- Navbar menu --}}
-        <div class="collapse navbar-collapse justify-content-end" id="navMain">
-        <ul class="navbar-nav gap-2">
-             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
-                Beranda
-                </a>
-            </li>
-            <li class="nav-item">
-                 <a class="nav-link {{ request()->is('saved') ? 'active' : '' }}" href="#">Simpan</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('status') ? 'active' : '' }}" href="#">Status</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('profile.*') ? 'active' : '' }}" href="{{ route('profile.show') }}">
-                Profile
-                </a>
-            </li>
-        </ul>
+    <div class="collapse navbar-collapse justify-content-end" id="navMain">
+      <ul class="navbar-nav gap-2">
+        <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Beranda</a>
+        </li>
+        <li class="nav-item"><a class="nav-link {{ request()->is('saved') ? 'active' : '' }}" href="#">Simpan</a></li>
+        <li class="nav-item"><a class="nav-link {{ request()->is('status') ? 'active' : '' }}" href="#">Status</a></li>
+        <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('profile.*') ? 'active' : '' }}" href="{{ route('profile.show') }}">Profile</a>
+        </li>
+      </ul>
     </div>
-    </div>
-  </nav>
-
+  </div>
+</nav>
+@show
 
   {{-- Main Content --}}
   <main class="py-5 page-gutter">
