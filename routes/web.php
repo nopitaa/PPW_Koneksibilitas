@@ -22,3 +22,8 @@ Route::post('/profile/update-about', [ProfileController::class, 'updateAbout'])-
 Route::get('/dashboard-perusahaan', function () {
     return view('/perusahaan/Dashboard');
 });
+
+//nnti nana update routesnya, update controller juga
+Route::get('/tambah-lowongan', function () {
+    return view('/perusahaan/form');
+});
