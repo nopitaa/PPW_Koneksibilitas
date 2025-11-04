@@ -19,8 +19,6 @@ Route::get('/login', function () {
     return view('auth.login'); // mengarah ke resources/views/auth/login.blade.php
 })->name('login');
 
-Route::get('/', fn () => redirect()->route('home'));
-
 Route::get('/informasi-lowongan-kerja', function () {
     return view('user.info-lowongan');
 })->name('info_lowongan');

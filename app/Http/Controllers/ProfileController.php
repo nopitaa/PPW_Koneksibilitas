@@ -24,7 +24,6 @@ class ProfileController extends Controller
             ],
         ];
 
-        // Pastikan file Blade ada di resources/views/user/profile-show.blade.php
         return view('user.profile-show', compact('user'));
     }
 
