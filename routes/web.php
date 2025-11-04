@@ -33,9 +33,10 @@ Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show')
 Route::post('/profile/update-about', [ProfileController::class, 'updateAbout'])->name('profile.updateAbout');
 
 //ROUTE BAGIAN PERUSAHAAN
-Route::get('/dashboard-perusahaan', function () {
-    return view('/perusahaan/Dashboard');
+Route::get('/perusahaan/dashboard', function () {
+    return view('perusahaan.Dashboard');
 });
+
 Route::get('/informasi-lowongan', function () {
     return view('perusahaan/views');
 });
