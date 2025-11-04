@@ -18,3 +18,7 @@ Route::get('/', fn () => redirect()->route('profile.show'));
 
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 Route::post('/profile/update-about', [ProfileController::class, 'updateAbout'])->name('profile.updateAbout');
+
+Route::get('/dashboard-perusahaan', function () {
+    return view('/perusahaan/Dashboard');
+});
