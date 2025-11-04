@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.user')
 
 @section('title', 'Beranda - Koneksibilitas')
 
@@ -26,7 +26,7 @@
           <img src="{{ asset('assets/img/logoperusahaan.png') }}" class="w-25 mx-auto mb-3" alt="">
           <h5 class="fw-semibold">Admin Sosial Media</h5>
           <p class="text-muted small mb-3">GlobalTrans Indo · Full-time</p>
-          <a href="{{ url('/informasi-lowongan') }}" class="btn btn-primary w-100">Info</a>
+          <a href="{{route('info_lowongan')}}" class="btn btn-primary w-100">Info</a>
         </div>
       </div>
 
@@ -35,7 +35,7 @@
           <img src="{{ asset('assets/img/logoperusahaan.png') }}" class="w-25 mx-auto mb-3" alt="">
           <h5 class="fw-semibold">Desain Grafis</h5>
           <p class="text-muted small mb-3">GlobalTrans Indo · Full-time</p>
-          <a href="{{ url('/informasi-lowongan') }}" class="btn btn-primary w-100">Info</a>
+          <a href="{{route('info_lowongan')}}" class="btn btn-primary w-100">Info</a>
         </div>
       </div>
 
@@ -44,7 +44,7 @@
           <img src="{{ asset('assets/img/logoperusahaan.png') }}" class="w-25 mx-auto mb-3" alt="">
           <h5 class="fw-semibold">Copy Writing</h5>
           <p class="text-muted small mb-3">GlobalTrans Indo · Full-time</p>
-          <a href="{{ url('/informasi-lowongan') }}" class="btn btn-primary w-100">Info</a>
+          <a href="{{route('info_lowongan')}}" class="btn btn-primary w-100">Info</a>
         </div>
       </div>
 

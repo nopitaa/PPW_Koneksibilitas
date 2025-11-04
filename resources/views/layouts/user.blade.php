@@ -62,7 +62,102 @@
       outline: 2px solid var(--brand);
     }
   </style>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding: 0;
+        }
 
+        .container-lowongan {
+            max-width: 700px;
+            margin: 60px auto;
+            background-color: white;
+            position: relative;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .back-icon, .save-icon {
+            font-size: 24px;
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .judul-halaman {
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            flex-grow: 1;
+            margin: 0;
+        }
+
+        .card-lowongan {
+            border: none;
+            background: transparent;
+        }
+
+        .header-lowongan {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-lowongan {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 12px;
+        }
+
+        .nama-posisi {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .nama-perusahaan {
+            color: #555;
+            font-size: 16px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .persyaratan {
+            white-space: pre-line;
+            margin-top: 5px;
+        }
+
+        .btn-lamar {
+            display: block;
+            width: 250px;
+            margin: 60px auto 0;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-lamar:hover {
+            background-color: #0056b3;
+        }
+    </style>
   @stack('head')
 </head>
 
@@ -113,12 +208,14 @@
     </div>
   </nav>
 
+
   {{-- Main Content --}}
   <main class="py-5 page-gutter">
     <div class="container-narrow">
       @yield('content')
     </div>
   </main>
+
 
   {{-- Footer --}}
   <footer class="py-4 border-top">
