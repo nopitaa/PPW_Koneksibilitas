@@ -28,7 +28,10 @@
                 Pelamar wajib melampirkan dokumen pendukung seperti CV dan Portofolio.
             </div>
 
-            <button class="btn-lamar">Lamar Pekerjaan</button>
+            <button class="btn-lamar" onclick="window.location.href='{{ route('lamar.step1') }}'">Lamar Pekerjaan</button>
+
+
+
         </div>
     </div>
 

@@ -24,7 +24,7 @@ class ProfileController extends Controller
             ],
         ];
 
-        return view('profile-show', compact('user'));
+        return view('user.profile-show', compact('user'));
     }
 
     public function updateAbout(Request $request)
