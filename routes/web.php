@@ -48,6 +48,11 @@ Route::get('/tambah-lowongan', function () {return view('perusahaan.form');});
 Route::post('/companies/{id}/approve', [CompanyController::class, 'approve'])->name('companies.approve');
 Route::post('/companies/{id}/reject', [CompanyController::class, 'reject'])->name('companies.reject');
 
+// ROUTE ADMIN
+Route::get('/admin/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');
+
+// Route untuk halaman perusahaan (daftar lowongan disetujui)
+Route::get('/admin/perusahaan', [CompanyController::class, 'index'])->name('perusahaan');
 
 // ROUTE AUTH 
 // Route::get('/', function () {return redirect()->route('login');});

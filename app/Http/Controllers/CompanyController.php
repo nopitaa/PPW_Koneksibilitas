@@ -24,7 +24,7 @@ class CompanyController extends Controller
         // Ambil semua data sesuai filter
         $companies = $query->get();
 
-        return view('dashboard', compact('companies'));
+        return view('admin.dashboard', compact('companies'));
     }
 
 
@@ -49,6 +49,6 @@ class CompanyController extends Controller
         // Halaman perusahaan hanya menampilkan data yang sudah disetujui
         $companies = Company::where('status', 'Disetujui')->get();
 
-        return view('perusahaan', compact('companies'));
+        return view('admin.perusahaan', compact('companies'));
     }
 }

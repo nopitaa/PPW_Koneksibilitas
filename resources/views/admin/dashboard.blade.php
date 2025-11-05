@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('admin.layout')
 
 @section('content')
 <div class="container-fluid" style="background-color: #f5f9ff; min-height: 100vh; padding: 30px;">
