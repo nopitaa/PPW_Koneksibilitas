@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'home_screens.dart';
 
 class InformasiLainPage extends StatefulWidget {
   const InformasiLainPage({super.key});
@@ -83,17 +84,16 @@ class _InformasiLainPageState extends State<InformasiLainPage> {
               ),
             ),
             const SizedBox(height: 24),
-            //pemilihan jenis disabilitas
+
+
             labelWajib("Jenis Disabilitas"),
             const SizedBox(height: 6),
             Row(
               children: [
                 Radio<String>(
                   value: 'Tuna Wicara',
-                  // ignore: deprecated_member_use
                   groupValue: jenisDisabilitas,
                   activeColor: Colors.blue,
-                  // ignore: deprecated_member_use
                   onChanged: (val) {
                     setState(() {
                       jenisDisabilitas = val;
@@ -104,10 +104,8 @@ class _InformasiLainPageState extends State<InformasiLainPage> {
                 const SizedBox(width: 24),
                 Radio<String>(
                   value: 'Tuna Rungu',
-                  // ignore: deprecated_member_use
                   groupValue: jenisDisabilitas,
                   activeColor: Colors.blue,
-                  // ignore: deprecated_member_use
                   onChanged: (val) {
                     setState(() {
                       jenisDisabilitas = val;
@@ -118,10 +116,8 @@ class _InformasiLainPageState extends State<InformasiLainPage> {
                 const SizedBox(width: 24),
                 Radio<String>(
                   value: 'Lainnya',
-                  // ignore: deprecated_member_use
                   groupValue: jenisDisabilitas,
                   activeColor: Colors.blue,
-                  // ignore: deprecated_member_use
                   onChanged: (val) {
                     setState(() {
                       jenisDisabilitas = val;
@@ -150,7 +146,6 @@ class _InformasiLainPageState extends State<InformasiLainPage> {
             const SizedBox(height: 6),
             GestureDetector(
               onTap: () {
-                // simulasi upload file
                 setState(() {
                   fileUploaded = true;
                 });
@@ -189,6 +184,7 @@ class _InformasiLainPageState extends State<InformasiLainPage> {
             ),
             const SizedBox(height: 30),
 
+            // Tombol Selesai
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -199,11 +195,9 @@ class _InformasiLainPageState extends State<InformasiLainPage> {
                       !fileUploaded) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text(
-                            'Lengkapi semua data wajib terlebih dahulu.'),
+                        content: Text('Lengkapi semua data wajib terlebih dahulu.'),
                       ),
                     );
-                    setState(() {}); 
                     return;
                   }
 
@@ -212,6 +206,15 @@ class _InformasiLainPageState extends State<InformasiLainPage> {
                       content: Text('Data berhasil disimpan!'),
                     ),
                   );
+
+                  // Setelah 1 detik, kembali ke beranda
+                  Future.delayed(const Duration(seconds: 1), () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomeScreens()),
+                      (route) => false,
+                    );
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
