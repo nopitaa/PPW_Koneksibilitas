@@ -1,40 +1,45 @@
 @extends('layouts.user')
-
 @section('content')
-<div class="container-lowongan my-4">
-    <div class="top-bar d-flex align-items-center mb-4">
-        <a href="{{ route('home') }}" class="back-icon me-3"><i class="bi bi-arrow-left"></i></a>
-        <h2 class="judul-halaman mb-0">Lowongan Tersimpan</h2>
-    </div>
-
-    {{-- Daftar Lowongan --}}
-    <div class="list-group">
-        @foreach ($jobs as $job)
-        <div class="card card-lowongan mb-3 border-0 shadow-sm">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                    <img src="{{ asset('company-icon.png') }}" alt="Logo" width="40" class="me-3 rounded-circle">
-                    <div>
-                        <h6 class="mb-1 fw-semibold">{{ $job['title'] }}</h6>
-                        <small class="text-muted">{{ $job['company'] }}</small>
-                    </div>
-                </div>
-                <button class="btn btn-primary btn-sm px-3" onclick="window.location.href='{{ route('lamar.step1') }}'">
-                    Lamar
-                </button>
-            </div>
+    <div class="container-lowongan">
+        <div class="top-bar">
+            <a href="{{route('home')}}" class="back-icon"><i class="bi bi-arrow-left"></i></a>
+            <h2 class="judul-halaman">Informasi Lowongan</h2>
+            <i class="bi bi-bookmark save-icon" id="saveIcon"></i>
         </div>
-        @endforeach
-    </div>
-</div>
 
-<script>
-    const saveIcon = document.getElementById('saveIcon');
-    if (saveIcon) {
+        <div class="card-lowongan">
+            <div class="header-lowongan">
+                <img src="assets/logo.png" alt="Logo" class="w-25 mx-auto mb-3">
+                <div>
+                    <div class="nama-posisi">Admin Sosial Media</div>
+                    <div class="nama-perusahaan">GlobalTrans Indo</div>
+                </div>
+            </div>
+
+            <div class="section-title">Lowongan tersedia</div>
+            <div>Customer Support Specialist</div>
+
+            <div class="section-title">Kategori Pekerjaan</div>
+            <div>Fulltime</div>
+
+            <div class="section-title mt-3">Persyaratan Lowongan</div>
+                FreshGraduate atau memiliki pengalaman minimal 1th
+                Siap bekerja dibawah tekanan
+                Pelamar wajib melampirkan dokumen pendukung seperti CV dan Portofolio.
+            </div>
+
+            <button class="btn-lamar" onclick="window.location.href='{{ route('lamar.step1') }}'">Lamar Pekerjaan</button>
+
+
+
+        </div>
+    </div>
+
+    <script>
+        const saveIcon = document.getElementById('saveIcon');
         saveIcon.addEventListener('click', () => {
             saveIcon.classList.toggle('bi-bookmark');
             saveIcon.classList.toggle('bi-bookmark-fill');
         });
-    }
-</script>
+    </script>
 @endsection

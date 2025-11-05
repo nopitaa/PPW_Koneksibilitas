@@ -70,8 +70,16 @@
         <span>KONEKSIBILITAS</span>
       </div>
 
-      <a href="{{ route('dashboard') }}" class="{{ request()->is('dashboard') ? 'active' : '' }}">Beranda</a>
-      <a href="{{ route('perusahaan') }}" class="{{ request()->is('perusahaan') ? 'active' : '' }}">Perusahaan</a>
+      <a href="{{ route('dashboard') }}" 
+   class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
+   Beranda
+</a>
+
+<a href="{{ route('perusahaan') }}" 
+   class="{{ request()->is('admin/perusahaan') ? 'active' : '' }}">
+   Perusahaan
+</a>
+
     </div>
 
     <!-- Main content -->
