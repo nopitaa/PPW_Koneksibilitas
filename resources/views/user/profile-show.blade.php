@@ -1,63 +1,101 @@
 @extends('layouts.user')
-@section('title','Profile — KONEKSIBILITAS')
+
+{{-- kalau mau halaman ini tanpa navbar, aktifkan ini --}}
+{{-- @section('navbar') @endsection --}}
 
 @section('content')
-  {{-- Header: avatar + nama --}}
-  <div class="d-flex flex-column align-items-center text-center gap-3 mt-2 mb-4">
-    <img class="avatar shadow-sm" src="{{ $user['avatar'] }}" alt="{{ $user['name'] }}">
-    <div>
-      <h4 class="mb-1">{{ $user['name'] }}</h4>
-      <div class="text-secondary">{{ $user['subtitle'] }}</div>
-    </div>
-  </div>
+<div class="container py-5" style="max-width:780px; margin:auto;">
 
-  {{-- Tentang Saya --}}
-  <section class="mb-4">
-    <h6 class="mb-2">Tentang Saya</h6>
-    <div class="card-soft p-3">
-      @if (session('success'))
-        <div class="alert alert-success py-2 mb-3">{{ session('success') }}</div>
-      @endif
-
-      <form action="{{ route('profile.updateAbout') }}" method="POST" class="d-grid gap-3">
-        @csrf
-        <textarea name="about" class="form-control" rows="4" required>{{ old('about', $user['about']) }}</textarea>
-        <div class="text-end">
-          <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+    @if(session('success'))
+        <div class="alert alert-success text-center">
+            {{ session('success') }}
         </div>
-      </form>
+    @endif
+
+    <div class="text-center mb-4">
+        {{-- avatar default kalau belum ada --}}
+        @php
+            $avatarUrl = $profile->avatar_path
+                ? asset('storage/'.$profile->avatar_path)
+                : 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
+        @endphp
+
+        <img src="{{ $avatarUrl }}"
+             class="avatar mb-3"
+             style="width:120px; height:120px; border-radius:50%; object-fit:cover;">
+
+        <h4 class="fw-bold mb-1">
+            {{ $profile->name ?? 'Profil Anda' }}
+        </h4>
+        {{-- subtitle dikosongkan sesuai permintaan --}}
     </div>
-  </section>
 
-  {{-- Keterampilan --}}
-  <section class="mb-4">
-    <h6 class="mb-3">Keterampilan</h6>
-    <div class="d-flex flex-wrap gap-2">
-      @foreach ($user['skills'] as $skill)
-        <span class="btn btn-primary pill">{{ $skill }}</span>
-      @endforeach
-    </div>
-  </section>
-
-  {{-- Dokumen --}}
-  <section class="mb-5">
-    <h6 class="mb-3">Dokumen</h6>
-
-    @foreach ($user['documents'] as $idx => $doc)
-      <div class="doc-row d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center gap-3">
-          <span class="btn btn-light rounded-circle p-0 d-inline-grid place-items-center" style="width:42px;height:42px;">
-            <i class="bi bi-file-earmark-text fs-5"></i>
-          </span>
-          <div>
-            <div class="fw-semibold">{{ $doc['title'] }}</div>
-            <div class="text-secondary small">{{ $doc['desc'] }}</div>
-          </div>
-        </div>
-        <a href="{{ $doc['url'] }}" class="text-decoration-none">
-          <i class="bi bi-chevron-right"></i>
+    <div class="text-center mb-4">
+        <a href="{{ route('profile.edit') }}"
+           class="btn btn-primary px-4 py-2 rounded-pill fw-semibold">
+            Edit Profil
         </a>
-      </div>
-    @endforeach
-  </section>
+    </div>
+
+    {{-- Tentang Saya --}}
+    <div class="mb-4">
+        <h5 class="fw-semibold">Tentang Saya</h5>
+        <div class="card-soft p-3">
+            @if(!empty($profile->about))
+                <p class="m-0">{{ $profile->about }}</p>
+            @else
+                <p class="text-muted m-0">Belum ada informasi yang ditambahkan.</p>
+            @endif
+        </div>
+    </div>
+
+    {{-- Keterampilan --}}
+    <div class="mb-4">
+        <h5 class="fw-semibold">Keterampilan</h5>
+        @if(!empty($profile->skills) && count($profile->skills))
+            <div class="d-flex flex-wrap gap-2">
+                @foreach($profile->skills as $skill)
+                    <span class="badge bg-primary pill">{{ $skill }}</span>
+                @endforeach
+            </div>
+        @else
+            <div class="card-soft p-3 text-muted">
+                Belum ada keterampilan.
+            </div>
+        @endif
+    </div>
+
+    {{-- Dokumen --}}
+    <div class="mb-4">
+        <h5 class="fw-semibold">Dokumen</h5>
+
+        @if(!$profile->cv_path && !$profile->resume_path && !$profile->portfolio_path)
+            <div class="card-soft p-3 text-muted">
+                Belum ada dokumen yang diunggah.
+            </div>
+        @else
+            <div class="d-flex flex-column gap-2">
+                @if($profile->cv_path)
+                    <a href="{{ asset('storage/'.$profile->cv_path) }}" target="_blank" class="doc-row text-decoration-none text-dark">
+                        <strong>CV</strong><br>
+                        <small class="text-muted">Daftar riwayat hidup terbaru (PDF)</small>
+                    </a>
+                @endif
+                @if($profile->resume_path)
+                    <a href="{{ asset('storage/'.$profile->resume_path) }}" target="_blank" class="doc-row text-decoration-none text-dark">
+                        <strong>Resume</strong><br>
+                        <small class="text-muted">Ringkasan 1 halaman untuk lamaran kerja</small>
+                    </a>
+                @endif
+                @if($profile->portfolio_path)
+                    <a href="{{ asset('storage/'.$profile->portfolio_path) }}" target="_blank" class="doc-row text-decoration-none text-dark">
+                        <strong>Portofolio</strong><br>
+                        <small class="text-muted">Kumpulan karya & studi kasus</small>
+                    </a>
+                @endif
+            </div>
+        @endif
+    </div>
+
+</div>
 @endsection
