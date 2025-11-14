@@ -2,39 +2,134 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Profile;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    public function show()
+    protected function getProfile(): Profile
     {
-        $about = Session::get('about', 'Saya seorang tuna rungu dengan semangat tinggi dan siap berkontribusi di dunia profesional. Meskipun menghadapi tantangan komunikasi, saya percaya kerja keras dan dedikasi adalah kunci kesuksesan.');
-
-        $user = [
-            'name' => 'Ruby Chan',
-            'subtitle' => 'Tuna Rungu',
-            'avatar' => 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=facearea&facepad=2',
-            'about' => $about,
-            'skills' => ['Web Development', 'Mobile Development', 'Desain Grafis', 'Content Writer', 'UI/UX Designer'],
-            'documents' => [
-                ['title' => 'CV', 'url' => '#', 'desc' => 'Daftar riwayat hidup terbaru (PDF)'],
-                ['title' => 'Resume', 'url' => '#', 'desc' => 'Ringkasan 1 halaman untuk lamaran kerja'],
-                ['title' => 'Portofolio', 'url' => '#', 'desc' => 'Kumpulan karya & studi kasus'],
-            ],
-        ];
-
-        return view('user.profile-show', compact('user'));
+        return Profile::firstOrCreate([], [
+            'name' => null,
+            'subtitle' => null,
+            'about' => null,
+            'skills' => null,
+        ]);
     }
 
-    public function updateAbout(Request $request)
+    public function show()
     {
-        $request->validate([
-            'about' => 'required|string|max:500'
+        $profile = $this->getProfile();
+
+        return view('user.profile-show', compact('profile'));
+    }
+
+    public function edit()
+    {
+        $profile = $this->getProfile();
+
+        return view('user.profile-edit', compact('profile'));
+    }
+
+    public function update(Request $request)
+    {
+        $profile = $this->getProfile();
+
+        $data = $request->validate([
+            'name'      => ['nullable', 'string', 'max:100'],
+            'about'     => ['nullable', 'string', 'max:1000'],
+            'skills'    => ['nullable', 'string'], // nanti diparse jadi array
+            'avatar'    => ['nullable', 'image', 'max:2048'], // 2MB
+            'cv'        => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
+            'resume'    => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
+            'portfolio' => ['nullable', 'file', 'mimes:pdf,doc,docx,zip', 'max:5120'],
         ]);
 
-        Session::put('about', $request->about);
+        // parsing skills: "Web, Mobile, UI" => ['Web', 'Mobile', 'UI']
+        $skillsArray = null;
+        if (!empty($data['skills'])) {
+            $skillsArray = collect(explode(',', $data['skills']))
+                ->map(fn ($s) => trim($s))
+                ->filter()
+                ->values()
+                ->all();
+        }
 
-        return back()->with('success', 'Bagian Tentang Saya berhasil diperbarui.');
+        // handle upload files (pakai disk public)
+        if ($request->hasFile('avatar')) {
+            if ($profile->avatar_path) {
+                Storage::disk('public')->delete($profile->avatar_path);
+            }
+            $data['avatar_path'] = $request->file('avatar')->store('profiles', 'public');
+        }
+
+        if ($request->hasFile('cv')) {
+            if ($profile->cv_path) {
+                Storage::disk('public')->delete($profile->cv_path);
+            }
+            $data['cv_path'] = $request->file('cv')->store('profiles', 'public');
+        }
+
+        if ($request->hasFile('resume')) {
+            if ($profile->resume_path) {
+                Storage::disk('public')->delete($profile->resume_path);
+            }
+            $data['resume_path'] = $request->file('resume')->store('profiles', 'public');
+        }
+
+        if ($request->hasFile('portfolio')) {
+            if ($profile->portfolio_path) {
+                Storage::disk('public')->delete($profile->portfolio_path);
+            }
+            $data['portfolio_path'] = $request->file('portfolio')->store('profiles', 'public');
+        }
+
+        // simpan
+        $profile->update([
+            'name'           => $data['name'] ?? $profile->name,
+            'subtitle'       => $profile->subtitle,  // kita biarkan kosong
+            'about'          => $data['about'] ?? null,
+            'skills'         => $skillsArray,
+            'avatar_path'    => $data['avatar_path'] ?? $profile->avatar_path,
+            'cv_path'        => $data['cv_path'] ?? $profile->cv_path,
+            'resume_path'    => $data['resume_path'] ?? $profile->resume_path,
+            'portfolio_path' => $data['portfolio_path'] ?? $profile->portfolio_path,
+        ]);
+
+        return redirect()
+            ->route('profile.show')
+            ->with('success', 'Profil berhasil diperbarui.');
+    }
+
+    // 🔍 PREVIEW FILE DI TAB BARU
+    public function view(string $type)
+    {
+        $profile = $this->getProfile();
+
+        // hanya boleh: cv, resume, portfolio
+        if (! in_array($type, ['cv', 'resume', 'portfolio'])) {
+            abort(404);
+        }
+
+        $field = $type . '_path';   // cv_path / resume_path / portfolio_path
+
+        if (! $profile->$field) {
+            abort(404);
+        }
+
+        $path = $profile->$field;
+
+        if (! Storage::disk('public')->exists($path)) {
+            abort(404, 'File tidak ditemukan.');
+        }
+
+        $file = Storage::disk('public')->get($path);
+        $mime = Storage::disk('public')->mimeType($path) ?? 'application/octet-stream';
+
+        // inline = buka di tab baru, bukan download
+        return response($file, 200)
+            ->header('Content-Type', $mime)
+            ->header('Content-Disposition', 'inline; filename="'.basename($path).'"');
     }
 }

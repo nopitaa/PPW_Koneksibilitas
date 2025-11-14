@@ -29,7 +29,11 @@ Route::get('/lamar-pekerjaan/step3', function () {return view('user.lamar-step3'
 Route::post('/lamar-pekerjaan/submit', [LamarController::class, 'submit'])->name('lamar.submit');
 
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-Route::post('/profile/update-about', [ProfileController::class, 'updateAbout'])->name('profile.updateAbout');
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+Route::get('/profile/view/{type}', [ProfileController::class, 'view'])
+    ->name('profile.view');
+
 
 // ROUTE BAGIAN PERUSAHAAN
 Route::get('/login-penyedia', function () {return view('perusahaan.login');})->name('login-perusahaan');
