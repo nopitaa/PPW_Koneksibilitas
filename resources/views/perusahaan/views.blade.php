@@ -12,8 +12,8 @@
                         </div>
                     </div>
                     <div class="col text-end">
-                        <a href="{{ url('/tambah-lowongan') }}"
-                            class="btn btn-light fw-semibold text-success border border-success">
+                        <a href="{{ url('/tambah-lowongan') }}" class="btn btn-light fw-semibold text-primary border"
+                            style="border-color:#0b5ed7">
                             <i class="bi bi-plus-circle me-1"></i> Tambah Lowongan
                         </a>
                     </div>
