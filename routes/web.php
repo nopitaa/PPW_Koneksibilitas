@@ -34,6 +34,18 @@ Route::post('/profile/update', [ProfileController::class, 'update'])->name('prof
 Route::get('/profile/view/{type}', [ProfileController::class, 'view'])
     ->name('profile.view');
 
+// ROUTE PELATIHAN
+// SEO
+Route::get('/pelatihan/seo', function () { return view('user.pelatihan.seo'); })->name('seo');
+Route::get('/pelatihan/seo/materi1', function () { return view('user.pelatihan.materi1_seo'); })->name('materi1');
+Route::get('/pelatihan/seo/materi2', function () { return view('user.pelatihan.materi2_seo'); })->name('materi2');
+Route::get('/pelatihan/seo/materi3', function () { return view('user.pelatihan.materi3_seo'); })->name('materi3');
+
+// Marketing
+Route::get('/pelatihan/marketing', function () { return view('user.pelatihan.marketing'); })->name('marketing');
+Route::get('/pelatihan/marketing/materi1', function () { return view('user.pelatihan.materi1_marketing'); })->name('marketing_materi1');
+Route::get('/pelatihan/marketing/materi2', function () { return view('user.pelatihan.materi2_marketing'); })->name('marketing_materi2');
+Route::get('/pelatihan/marketing/materi3', function () { return view('user.pelatihan.materi3_marketing'); })->name('marketing_materi3');
 
 // ROUTE BAGIAN PERUSAHAAN
 Route::get('/login-penyedia', function () {return view('perusahaan.login');})->name('login-perusahaan');
