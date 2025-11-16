@@ -90,7 +90,7 @@
       <script>
         function confirmLogout() {
           if (confirm('Apakah Anda yakin ingin logout?')) {
-            window.location.href = '{{ route('login') }}';
+            window.location.href = '{{ route('admin.login') }}';
           }
         }
       </script>
@@ -102,7 +102,6 @@
       @if(session('error'))
           <div class="alert alert-danger">{{ session('error') }}</div>
       @endif
-
 
       @yield('content')
     </div>

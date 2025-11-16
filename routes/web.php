@@ -5,6 +5,8 @@ use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LamarController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
 
 // ROUTE BAGIAN USER
 Route::get('/', function () {return view('user.login');})->name('login');
@@ -57,18 +59,35 @@ Route::get('/edit-lowongan', function () {return view('perusahaan.edit');});
 
 Route::get('/tambah-lowongan', function () {return view('perusahaan.form');});
 
-// Route::get('/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');
-// Route::get('/perusahaan', [CompanyController::class, 'index'])->name('perusahaan');
+//melani 
+Route::get('/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');
+Route::get('/perusahaan', [CompanyController::class, 'index'])->name('perusahaan');
 
-// ROUTE ADMIN
+//melani untuk status admin
 Route::post('/companies/{id}/approve', [CompanyController::class, 'approve'])->name('companies.approve');
 Route::post('/companies/{id}/reject', [CompanyController::class, 'reject'])->name('companies.reject');
 
-// ROUTE ADMIN
-Route::get('/admin/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');
+// Halaman Login Admin
+// Tampil halaman login admin
+Route::get('/admin/login', function () {
+    return view('auth.login-admin');
+})->name('admin.login');
 
-// Route untuk halaman perusahaan (daftar lowongan disetujui)
-Route::get('/admin/perusahaan', [CompanyController::class, 'index'])->name('perusahaan');
+// Proses login admin (POST)
+Route::post('/admin/login', function () {
+    return redirect()->route('dashboard');
+})->name('admin.login.submit');
+
+Route::get('/admin/logout', function () {
+    session()->flush(); // hapus semua session
+    return redirect('/admin/login'); // PAKSA ke login admin
+})->name('admin.logout');
+
+
+
+//company auth melani
+// Route::get('/admin/login', [AdminController::class, 'loginPage']);
+// Route::get('/company/login', [CompanyController::class, 'loginPage']);
 
 // ROUTE AUTH 
 // Route::get('/', function () {return redirect()->route('login');});
