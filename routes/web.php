@@ -5,6 +5,8 @@ use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LamarController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
 
 // ROUTE BAGIAN USER
 Route::get('/', function () {return view('user.login');})->name('login');
@@ -34,6 +36,30 @@ Route::post('/profile/update', [ProfileController::class, 'update'])->name('prof
 Route::get('/profile/view/{type}', [ProfileController::class, 'view'])
     ->name('profile.view');
 
+// ROUTE PELATIHAN
+// SEO
+Route::get('/pelatihan/seo', function () { return view('user.pelatihan.seo'); })->name('seo');
+Route::get('/pelatihan/seo/materi1', function () { return view('user.pelatihan.materi1_seo'); })->name('materi1');
+Route::get('/pelatihan/seo/materi2', function () { return view('user.pelatihan.materi2_seo'); })->name('materi2');
+Route::get('/pelatihan/seo/materi3', function () { return view('user.pelatihan.materi3_seo'); })->name('materi3');
+
+// Marketing
+Route::get('/pelatihan/marketing', function () { return view('user.pelatihan.marketing'); })->name('marketing');
+Route::get('/pelatihan/marketing/materi1', function () { return view('user.pelatihan.materi1_marketing'); })->name('marketing_materi1');
+Route::get('/pelatihan/marketing/materi2', function () { return view('user.pelatihan.materi2_marketing'); })->name('marketing_materi2');
+Route::get('/pelatihan/marketing/materi3', function () { return view('user.pelatihan.materi3_marketing'); })->name('marketing_materi3');
+
+// Copywritting
+Route::get('/pelatihan/copywritting', function () { return view('user.pelatihan.copywritting'); })->name('copywritting');
+Route::get('/pelatihan/copywritting/materi1', function () { return view('user.pelatihan.materi1_copywritting'); })->name('copywritting_materi1');
+Route::get('/pelatihan/copywritting/materi2', function () { return view('user.pelatihan.materi2_copywritting'); })->name('copywritting_materi2');
+Route::get('/pelatihan/copywritting/materi3', function () { return view('user.pelatihan.materi3_copywritting'); })->name('copywritting_materi3');
+
+// Data Analyst
+Route::get('/pelatihan/dataanalyst', function () { return view('user.pelatihan.dataanalyst'); })->name('dataanalyst');
+Route::get('/pelatihan/dataanalyst/materi1', function () { return view('user.pelatihan.materi1_dataanalyst'); })->name('dataanalyst_materi1');
+Route::get('/pelatihan/dataanalyst/materi2', function () { return view('user.pelatihan.materi2_dataanalyst'); })->name('dataanalyst_materi2');
+Route::get('/pelatihan/dataanalyst/materi3', function () { return view('user.pelatihan.materi3_dataanalyst'); })->name('dataanalyst_materi3');
 
 // ROUTE BAGIAN PERUSAHAAN
 Route::get('/login-penyedia', function () {return view('perusahaan.login');})->name('login-perusahaan');
@@ -45,46 +71,18 @@ Route::get('/edit-lowongan', function () {return view('perusahaan.edit');});
 
 Route::get('/tambah-lowongan', function () {return view('perusahaan.form');});
 
-// Route::get('/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');
-// Route::get('/perusahaan', [CompanyController::class, 'index'])->name('perusahaan');
+//melani 
+Route::get('/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');
+Route::get('/perusahaan', [CompanyController::class, 'index'])->name('perusahaan');
 
-// ROUTE ADMIN
+//melani untuk status admin
 Route::post('/companies/{id}/approve', [CompanyController::class, 'approve'])->name('companies.approve');
 Route::post('/companies/{id}/reject', [CompanyController::class, 'reject'])->name('companies.reject');
 
-// ROUTE ADMIN
-Route::get('/admin/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');
+// Tampil halaman login admin
+Route::get('/admin/login', function () {return view('auth.login-admin');})->name('admin.login');
 
-// Route untuk halaman perusahaan (daftar lowongan disetujui)
-Route::get('/admin/perusahaan', [CompanyController::class, 'index'])->name('perusahaan');
+// Proses login admin (POST)
+Route::post('/admin/login', function () {return redirect()->route('dashboard');})->name('admin.login.submit');
+Route::get('/admin/logout', function () {session()->flush(); return redirect('/admin/login'); })->name('admin.logout');
 
-// ROUTE AUTH 
-// Route::get('/', function () {return redirect()->route('login');});
-
-// Route::get('/login', function () {return view('auth.login');})->name('login');
-// // mengarah ke resources/views/auth/login.blade.php
-
-// Route::post('/login', function (Request $request) {
-//     $email = $request->input('email');
-//     $password = $request->input('password');
-
-//     // nanti ganti Auth::user()->role BE
-//     if ($email === 'admin@gmail.com') {
-//         $role = 1;
-//     } elseif ($email === 'perusahaan@gmail.com') {
-//         $role = 2;
-//     } else {
-//         $role = 3;
-//     }
-
-//     // switch case role
-//     switch ($role) {
-//         case 1:
-//             return redirect('/admin/dashboard');
-//         case 2:
-//             return redirect('/perusahaan/dashboard');
-//         case 3:
-//             return redirect('/beranda');
-//         default:
-//             return redirect('/login')->with('error', 'Role tidak dikenal.');
-//     }})->name('login.submit');
