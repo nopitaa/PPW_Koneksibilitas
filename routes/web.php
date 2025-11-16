@@ -49,6 +49,18 @@ Route::get('/pelatihan/marketing/materi1', function () { return view('user.pelat
 Route::get('/pelatihan/marketing/materi2', function () { return view('user.pelatihan.materi2_marketing'); })->name('marketing_materi2');
 Route::get('/pelatihan/marketing/materi3', function () { return view('user.pelatihan.materi3_marketing'); })->name('marketing_materi3');
 
+// Copywritting
+Route::get('/pelatihan/copywritting', function () { return view('user.pelatihan.copywritting'); })->name('copywritting');
+Route::get('/pelatihan/copywritting/materi1', function () { return view('user.pelatihan.materi1_copywritting'); })->name('copywritting_materi1');
+Route::get('/pelatihan/copywritting/materi2', function () { return view('user.pelatihan.materi2_copywritting'); })->name('copywritting_materi2');
+Route::get('/pelatihan/copywritting/materi3', function () { return view('user.pelatihan.materi3_copywritting'); })->name('copywritting_materi3');
+
+// Data Analyst
+Route::get('/pelatihan/dataanalyst', function () { return view('user.pelatihan.dataanalyst'); })->name('dataanalyst');
+Route::get('/pelatihan/dataanalyst/materi1', function () { return view('user.pelatihan.materi1_dataanalyst'); })->name('dataanalyst_materi1');
+Route::get('/pelatihan/dataanalyst/materi2', function () { return view('user.pelatihan.materi2_dataanalyst'); })->name('dataanalyst_materi2');
+Route::get('/pelatihan/dataanalyst/materi3', function () { return view('user.pelatihan.materi3_dataanalyst'); })->name('dataanalyst_materi3');
+
 // ROUTE BAGIAN PERUSAHAAN
 Route::get('/login-penyedia', function () {return view('perusahaan.login');})->name('login-perusahaan');
 Route::get('/perusahaan/dashboard', function () {return view('perusahaan.Dashboard');})->name('perusahaan-dashboard');
@@ -67,55 +79,10 @@ Route::get('/perusahaan', [CompanyController::class, 'index'])->name('perusahaan
 Route::post('/companies/{id}/approve', [CompanyController::class, 'approve'])->name('companies.approve');
 Route::post('/companies/{id}/reject', [CompanyController::class, 'reject'])->name('companies.reject');
 
-// Halaman Login Admin
 // Tampil halaman login admin
-Route::get('/admin/login', function () {
-    return view('auth.login-admin');
-})->name('admin.login');
+Route::get('/admin/login', function () {return view('auth.login-admin');})->name('admin.login');
 
 // Proses login admin (POST)
-Route::post('/admin/login', function () {
-    return redirect()->route('dashboard');
-})->name('admin.login.submit');
+Route::post('/admin/login', function () {return redirect()->route('dashboard');})->name('admin.login.submit');
+Route::get('/admin/logout', function () {session()->flush(); return redirect('/admin/login'); })->name('admin.logout');
 
-Route::get('/admin/logout', function () {
-    session()->flush(); // hapus semua session
-    return redirect('/admin/login'); // PAKSA ke login admin
-})->name('admin.logout');
-
-
-
-//company auth melani
-// Route::get('/admin/login', [AdminController::class, 'loginPage']);
-// Route::get('/company/login', [CompanyController::class, 'loginPage']);
-
-// ROUTE AUTH 
-// Route::get('/', function () {return redirect()->route('login');});
-
-// Route::get('/login', function () {return view('auth.login');})->name('login');
-// // mengarah ke resources/views/auth/login.blade.php
-
-// Route::post('/login', function (Request $request) {
-//     $email = $request->input('email');
-//     $password = $request->input('password');
-
-//     // nanti ganti Auth::user()->role BE
-//     if ($email === 'admin@gmail.com') {
-//         $role = 1;
-//     } elseif ($email === 'perusahaan@gmail.com') {
-//         $role = 2;
-//     } else {
-//         $role = 3;
-//     }
-
-//     // switch case role
-//     switch ($role) {
-//         case 1:
-//             return redirect('/admin/dashboard');
-//         case 2:
-//             return redirect('/perusahaan/dashboard');
-//         case 3:
-//             return redirect('/beranda');
-//         default:
-//             return redirect('/login')->with('error', 'Role tidak dikenal.');
-//     }})->name('login.submit');

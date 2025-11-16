@@ -101,7 +101,9 @@
             <p class="text-muted small flex-grow-1">
               Kelas ini membahas cara membuat tulisan persuasif untuk iklan.
             </p>
-            <button class="btn btn-primary w-100 btn-sm mt-auto">Ikuti Pelatihan</button>
+            <a href="{{ route('copywritting') }}" class="btn btn-primary w-100 btn-sm mt-auto">
+              Ikuti Pelatihan
+            </a>
           </div>
         </div>
       </div>
@@ -115,7 +117,9 @@
             <p class="text-muted small flex-grow-1">
               Kelas ini membahas konsep data, serta pengantar tools seperti Google Sheet.
             </p>
-            <button class="btn btn-primary w-100 btn-sm mt-auto">Ikuti Pelatihan</button>
+            <a href="{{ route('dataanalyst') }}" class="btn btn-primary w-100 btn-sm mt-auto">
+              Ikuti Pelatihan
+            </a>
           </div>
         </div>
       </div>
