@@ -67,9 +67,10 @@ Route::get('/login-penyedia', [PerusahaanController::class, 'showLogin'])->name(
 Route::post('/login-penyedia', [PerusahaanController::class, 'login'])->name('hit-login-perusahaan');
 Route::get('/perusahaan/dashboard', [PerusahaanController::class, 'dashboard'])->name('perusahaan-dashboard');
 Route::get('/logout-perusahaan', [PerusahaanController::class, 'logout'])->name('logout-perusahaan');
+Route::get('/informasi-lowongan', [PerusahaanController::class, 'GetLowongan'])->name('informasi-lowongan');
+Route::get('/informasi-lowongan/edit/{id}', [PerusahaanController::class, 'editLowongan'])->name('edit-lowongan');
+Route::put('/informasi-lowongan/update/{id}', [PerusahaanController::class, 'updateLowongan'])->name('update-lowongan');
 
-Route::get('/informasi-lowongan', function () {return view('perusahaan.views');});
-Route::get('/edit-lowongan', function () {return view('perusahaan.edit');});
 Route::get('/tambah-lowongan', function () {return view('perusahaan.form');});
 
 //melani

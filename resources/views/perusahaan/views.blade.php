@@ -37,54 +37,41 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="border-end">1</td>
-                                    <td class="border-end">Backend Engineer</td>
-                                    <td class="border-end text-start">
-                                        - Mahir PHP dan Laravel<br>
-                                        - Menguasai REST API<br>
-                                        - Minimal pengalaman 1 tahun
-                                    </td>
-                                    <td class="border-end">Full Time</td>
-                                    <td>
-                                        <a href="{{ url('/detail-lowongan') }}" class="btn btn-success btn-sm me-1"
-                                            title="Lihat Detail">
-                                            <i class="bi bi-info-circle"></i>
-                                        </a>
-                                        <a href="{{ url('/edit-lowongan') }}" class="btn btn-warning btn-sm me-1 text-white"
-                                            title="Edit Data">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        <button class="btn btn-danger btn-sm" title="Hapus Data">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                @forelse ($lowongan as $index => $l)
+                                    <tr>
+                                        <td class="border-end">{{ $index + 1 }}</td>
 
-                                <tr>
-                                    <td class="border-end">2</td>
-                                    <td class="border-end">UI/UX Designer</td>
-                                    <td class="border-end text-start">
-                                        - Paham prinsip desain UI/UX<br>
-                                        - Bisa Figma<br>
-                                        - Kreatif dan komunikatif
-                                    </td>
-                                    <td class="border-end">Remote</td>
-                                    <td>
-                                        <a href="{{ url('/detail-lowongan') }}" class="btn btn-success btn-sm me-1"
-                                            title="Lihat Detail">
-                                            <i class="bi bi-info-circle"></i>
-                                        </a>
-                                        <a href="{{ url('/edit-lowongan') }}" class="btn btn-warning btn-sm me-1 text-white"
-                                            title="Edit Data">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        <button class="btn btn-danger btn-sm" title="Hapus Data">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                        <td class="border-end">{{ $l->posisi }}</td>
+
+                                        <td class="border-end text-start">
+                                            {!!(Str::limit($l->persyaratan, 50)) !!}
+                                        </td>
+
+                                        <td class="border-end">{{ $l->kategori_pekerjaan }}</td>
+
+                                        <td>
+                                            <a href="{{ url('/detail-lowongan/' . $l->lowongan_id) }}"
+                                                class="btn btn-success btn-sm me-1" title="Lihat Detail">
+                                                <i class="bi bi-info-circle"></i>
+                                            </a>
+
+                                            <a href="{{ route('edit-lowongan', $l->lowongan_id) }}"
+                                                class="btn btn-warning btn-sm me-1 text-white" title="Edit Data">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+
+                                            <button class="btn btn-danger btn-sm" title="Hapus Data">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">Belum ada lowongan</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
+
                         </table>
                     </div>
                 </div>

@@ -9,7 +9,10 @@ use App\Models\Lamaran;
 
 class lowongan extends Model
 {
-
+    protected $table = 'lowongan';
+    protected $primaryKey = 'lowongan_id';
+    public $incrementing = true;
+    protected $keyType = 'int';
     protected $fillable = [
         'posisi',
         'persyaratan',
