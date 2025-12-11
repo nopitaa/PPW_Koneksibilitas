@@ -53,7 +53,7 @@ class User extends Authenticatable
 
     public function lamaran()
     {
-        return $this->belongsTo(Lamaran::class);
+        return $this->hasMany(Lamaran::class);
         // punya relasi dengan lowongan many to many
     }
     public function dashboard_user()
