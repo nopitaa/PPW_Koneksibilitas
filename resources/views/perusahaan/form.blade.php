@@ -23,8 +23,8 @@
                 <div class="col-md-12 mr-3 ml-3">
                     <div class="card">
 
-                        <form id="form-tambah-lowongan" action="{{ route('informasi-lowongan') }}"
-                            method="">
+                        <form id="form-tambah-lowongan" action="{{ route('tambah-lowongan.process') }}"
+                            method="POST">
                             @csrf
 
                             <div class="card-body">
