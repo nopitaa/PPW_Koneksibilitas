@@ -14,7 +14,7 @@ Route::get('/',[UserController::class,'formLogin'])->name('login');
 Route::post('/login',[UserController::class,'login'])->name('login.process');
 Route::get('/register',[UserController::class,'formRegister'])->name('register');
 Route::post('/register',[UserController::class,'register'])->name('register.process');
-Route::get('/beranda', function () {return view('user.beranda');})->name('home');
+Route::get('/beranda',[UserController::class,'beranda'])->name('home');
 
 Route::get('/informasi-lowongan-kerja', function () {return view('user.info-lowongan');})->name('info_lowongan');
 
