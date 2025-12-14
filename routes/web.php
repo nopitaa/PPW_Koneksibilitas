@@ -8,6 +8,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PerusahaanController;
 
 // ROUTE BAGIAN USER
 Route::get('/',[UserController::class,'formLogin'])->name('login');
@@ -66,16 +67,17 @@ Route::get('/pelatihan/dataanalyst/materi2', function () { return view('user.pel
 Route::get('/pelatihan/dataanalyst/materi3', function () { return view('user.pelatihan.materi3_dataanalyst'); })->name('dataanalyst_materi3');
 
 // ROUTE BAGIAN PERUSAHAAN
-Route::get('/login-penyedia', function () {return view('perusahaan.login');})->name('login-perusahaan');
-Route::get('/perusahaan/dashboard', function () {return view('perusahaan.Dashboard');})->name('perusahaan-dashboard');
-
-Route::get('/informasi-lowongan', function () {return view('perusahaan.views');});
-
-Route::get('/edit-lowongan', function () {return view('perusahaan.edit');});
+Route::get('/login-penyedia', [PerusahaanController::class, 'showLogin'])->name('login-perusahaan');
+Route::post('/login-penyedia', [PerusahaanController::class, 'login'])->name('hit-login-perusahaan');
+Route::get('/perusahaan/dashboard', [PerusahaanController::class, 'dashboard'])->name('perusahaan-dashboard');
+Route::get('/logout-perusahaan', [PerusahaanController::class, 'logout'])->name('logout-perusahaan');
+Route::get('/informasi-lowongan', [PerusahaanController::class, 'GetLowongan'])->name('informasi-lowongan');
+Route::get('/informasi-lowongan/edit/{id}', [PerusahaanController::class, 'editLowongan'])->name('edit-lowongan');
+Route::put('/informasi-lowongan/update/{id}', [PerusahaanController::class, 'updateLowongan'])->name('update-lowongan');
 
 Route::get('/tambah-lowongan', function () {return view('perusahaan.form');});
 
-//melani 
+//melani
 Route::get('/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');
 Route::get('/perusahaan', [CompanyController::class, 'index'])->name('perusahaan');
 
