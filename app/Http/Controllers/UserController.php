@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rules\Password; 
 
 class UserController extends Controller
 {
@@ -17,15 +18,34 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
-        // Validasi input
+       // Validasi input
         $request->validate([
-            'email'         => 'required|email|unique:users',
-           'nama_depan'    => 'required|string|max:255',
-           'nama_belakang' => 'required|string|max:255',
-           'jenis_kelamin' => 'required',
-            'password'     => 'required|min:8'
+            'email' => [
+                'required', 
+                'string', 
+                'email:dns',            
+                'unique:users'      
+            ],
+            'nama_depan'    => 'required|string|max:255',
+            'nama_belakang' => 'required|string|max:255',
+            'jenis_kelamin' => 'required',
+            'password' => [
+                'required',
+                Password::min(8)     // Minimal 8 karakter
+                    ->letters()      // Harus ada huruf
+                    ->mixedCase()    // Harus ada Huruf Besar & Kecil
+                    ->symbols()      // Harus ada Simbol (!, @, #, dll)
+                    ->numbers()   // (Opsional) Kalau mau wajib ada angka juga
+            ],
+        ], 
+        [
+            'password.min'     => 'Password minimal harus 8 karakter.',
+            'password.mixed'   => 'Password harus mengandung huruf Besar dan Kecil.',
+            'password.symbols' => 'Password harus mengandung minimal satu simbol unik (!, @, #, $, dll).',
+            'password.letters' => 'Password harus mengandung huruf.',
+            'email.unique'     => 'Email sudah terdaftar.',
+            'email.email'      => 'Format email tidak valid.'
         ]);
-
         // Buat user baru
         User::create([
             'email' => $request->email,
@@ -35,7 +55,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             
         ]);
-        return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login.');
+        return redirect()->route('login')->with('success', 'Silakan login.');
     }
 
     public function formLogin()
@@ -53,12 +73,9 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             //regenerasi session ID 
             $request->session()->regenerate();
-            return redirect()->intended('/beranda');
+            return redirect()->intended('/beranda')->with('success','Selamat Datang di Koneksibilitas!');
         }
-
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->onlyInput('email');
+        return back()->with('error', 'Email atau password yang Anda masukkan salah.');    
     }
 
      public function Beranda()

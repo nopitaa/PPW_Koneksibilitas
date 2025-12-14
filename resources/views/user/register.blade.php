@@ -168,6 +168,26 @@
       <p class = "penyedia-kerja">Masuk sebagai Penyedia Kerja? <a href="{{ route('login-perusahaan') }}">Penyedia kerja</a></p>
     </div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+      // === Cek Error Validasi (Input Kosong / Format Salah) ===
+      @if ($errors->any())
+          let errorMessages = '';
+          // Loop semua pesan error dari Laravel
+          @foreach ($errors->all() as $error)
+              errorMessages += '{{ $error }}<br>';
+          @endforeach
+
+          Swal.fire({
+              icon: 'error',
+              title: 'Periksa Inputan Anda',
+              html: errorMessages, // Menampilkan list error
+          });
+      @endif
+  </script>
+
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

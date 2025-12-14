@@ -127,4 +127,17 @@
     </div>
   </section>
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Cek apakah ada session "success" yang dikirim dari Login
+    @if (session('success'))
+        Swal.fire({
+            title: "Login Berhasil",
+            text: "{{ session('success') }}", // Mengambil pesan dari Controller
+            icon: "success"
+        });
+    @endif
+</script>
+
 @endsection

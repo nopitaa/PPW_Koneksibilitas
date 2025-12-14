@@ -105,13 +105,6 @@
     
     <div class="card-body">
 
-      {{-- error handling --}}
-      @if($errors->any())
-        <div class="alert alert-danger">
-            {{ $errors->first() }}
-        </div>
-      @endif
-
       <form id="form" action="{{ route('login.process') }}" method="POST">
         @csrf
 
@@ -142,6 +135,43 @@
       <p class = "penyedia-kerja">Masuk sebagai Penyedia Kerja? <a href="{{ route('login-perusahaan') }}">Penyedia kerja</a></p>
     </div>
   </div>
+
+  {{-- Sweet Alert --}}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+      // 1. Alert Validasi (Input Kosong)
+      @if ($errors->any())
+          let errorMessages = '';
+          @foreach ($errors->all() as $error)
+              errorMessages += '{{ $error }}<br>';
+          @endforeach
+
+          Swal.fire({
+              icon: 'error',
+              title: 'Periksa Kembali',
+              html: errorMessages,
+          });
+      @endif
+
+      // 2. Alert Login Gagal (Password Salah) - Dari Controller with('error')
+      @if (session('error'))
+          Swal.fire({
+              title: "Gagal Masuk!",
+              text: "{{ session('error') }}",
+              icon: "error"
+          });
+      @endif
+
+      // 3. Alert Sukses (Dilempar dari Register)
+      @if (session('success'))
+          Swal.fire({
+              title: "Berhasil!",
+              text: "{{ session('success') }}",
+              icon: "success"
+          });
+      @endif
+  </script>
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
