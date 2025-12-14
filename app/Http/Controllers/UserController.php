@@ -19,14 +19,21 @@ class UserController extends Controller
     {
         // Validasi input
         $request->validate([
-           
+            'email'         => 'required|email|unique:users',
+           'nama_depan'    => 'required|string|max:255',
+           'nama_belakang' => 'required|string|max:255',
+           'jenis_kelamin' => 'required',
+            'password'     => 'required|min:8'
         ]);
 
         // Buat user baru
         User::create([
-            // 'name' => $request->name,
-            // 'email' => $request->email,
-            // 'password' => Hash::make($request->password)
+            'email' => $request->email,
+            'nama_depan' => $request->nama_depan,
+            'nama_belakang' => $request->nama_belakang,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'password' => Hash::make($request->password),
+            
         ]);
         return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login.');
     }
@@ -46,11 +53,16 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             //regenerasi session ID 
             $request->session()->regenerate();
-            return redirect()->intended('home');
+            return redirect()->intended('/beranda');
         }
 
         return back()->withErrors([
             'email' => 'Email atau password salah.',
         ])->onlyInput('email');
+    }
+
+     public function Beranda()
+    {  
+        return view('user.beranda');
     }
 }
