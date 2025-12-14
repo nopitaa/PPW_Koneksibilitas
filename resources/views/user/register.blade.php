@@ -105,22 +105,12 @@
     
     <div class="card-body">
 
-      {{-- error handling --}}
-      @if($errors->any())
-        <div class="alert alert-danger">
-            {{ $errors->first() }}
-        </div>
-      @endif
-
-      <form id="form" action="{{ route('login.process') }}" method="POST">
-        @csrf
-
+      <form id="form"  action="{{ route('home') }}">
         <div class="mb-3" >
-          <input type="email" name="email" class="form-control" id="email" placeholder="Email" value="{{ old('email') }}" required>
+          <input type="email" class="form-control" id="email" placeholder="Email" required>
         </div>
-
         <div class="mb-3">
-          <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+          <input type="password" class="form-control" id="password" placeholder="Password" required>
         </div>
 
         <div class= "form-check">
@@ -128,7 +118,6 @@
           <label class="form-check-label" for="exampleCheck1">Dengan lanjut, Anda setuju pada Ketentuan, Privasi, dan Cookie KoneksiBilitas</label>
         </div>
         <button type="submit" class="btn btn-primary">Sign In</button>
-        
       </form>
       <a href="#" class="btn btn-outline-primary">Sign Up</a>
 
