@@ -75,7 +75,8 @@ Route::get('/informasi-lowongan', [PerusahaanController::class, 'GetLowongan'])-
 Route::get('/informasi-lowongan/edit/{id}', [PerusahaanController::class, 'editLowongan'])->name('edit-lowongan');
 Route::put('/informasi-lowongan/update/{id}', [PerusahaanController::class, 'updateLowongan'])->name('update-lowongan');
 
-Route::get('/tambah-lowongan', function () {return view('perusahaan.form');});
+Route::get('/tambah-lowongan', [PerusahaanController::class,'formLowongan'])->name('tambah-lowongan');
+Route::post('/tambah-lowongan', [PerusahaanController::class,'addLowongan'])->name('tambah-lowongan.process');
 
 //melani
 Route::get('/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');

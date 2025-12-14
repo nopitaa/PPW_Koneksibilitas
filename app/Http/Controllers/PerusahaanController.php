@@ -72,6 +72,33 @@ class PerusahaanController extends Controller
         ]);
     }
 
+    public function formLowongan(){
+        return view('perusahaan.form');
+    }
+
+    public function addLowongan(Request $request){
+         if (!Session::has('perusahaan')) {
+            return redirect()->route('login-perusahaan');
+        }
+
+        $request->validate([
+            'posisi' => 'required',
+            'persyaratan' => 'required',
+            'kategori_pekerjaan' => 'required'
+        ]);
+
+        $perusahaan = Session::get('perusahaan'); 
+
+        Lowongan::create([    
+            'perusahaan_id' => $perusahaan->perusahaan_id, 
+            'posisi' => $request->posisi,
+            'persyaratan' => $request->persyaratan,
+            'kategori_pekerjaan' => $request->kategori_pekerjaan
+        ]);
+        
+        return redirect()->route('informasi-lowongan')->with('success', 'Lowongan berhasil ditambah.');
+    }
+
     public function editLowongan($id)
     {
         if (!Session::has('perusahaan')) {

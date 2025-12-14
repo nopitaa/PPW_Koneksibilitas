@@ -11,9 +11,11 @@ class lowongan extends Model
 {
     protected $table = 'lowongan';
     protected $primaryKey = 'lowongan_id';
+    protected $foreignKey = 'perusahaan_id';
     public $incrementing = true;
     protected $keyType = 'int';
     protected $fillable = [
+        'perusahaan_id',
         'posisi',
         'persyaratan',
         'kategori_pekerjaan',
