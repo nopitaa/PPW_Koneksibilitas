@@ -32,28 +32,20 @@
                         </div>
 
                         {{-- FORM EDIT LOWONGAN --}}
-                        <form id="form-edit-lowongan" action="" method="POST">
-                            {{-- @csrf --}}
-                            {{-- @method('PUT') --}}
+                        <form id="form-edit-lowongan" action="{{ route('update-lowongan', $lowongan->lowongan_id) }}"
+                            method="POST">
+                            @csrf
+                            @method('PUT')
+
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-15">
 
-                                        {{-- Posisi Lowongan --}}
+                                    {{-- Posisi Lowongan --}}
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="posisi" class="form-control-label">Posisi Lowongan</label>
                                             <input class="form-control" type="text" name="posisi" id="posisi"
-                                                value="Backend Engineer" required>
-                                        </div>
-                                    </div>
-
-                                    {{-- Persyaratan --}}
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="persyaratan" class="form-control-label">Persyaratan Lowongan</label>
-                                            <textarea class="form-control" name="persyaratan" id="persyaratan" rows="4" required>- Mahir PHP dan Laravel
-                                                - Menguasai REST API
-                                                - Minimal pengalaman 1 tahun</textarea>
+                                                value="{{ $lowongan->posisi }}" required>
                                         </div>
                                     </div>
 
@@ -63,15 +55,45 @@
                                             <label for="kategori_pekerjaan" class="form-control-label">Kategori
                                                 Pekerjaan</label>
                                             <input class="form-control" type="text" name="kategori_pekerjaan"
-                                                id="kategori_pekerjaan" value="Full Time" required>
+                                                id="kategori_pekerjaan" value="{{ $lowongan->kategori_pekerjaan }}"
+                                                required>
                                         </div>
                                     </div>
+
+                                    {{-- Persyaratan --}}
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="persyaratan" class="form-control-label">Persyaratan Lowongan</label>
+
+                                            <textarea class="form-control" name="persyaratan" id="persyaratan" rows="5" required>
+                                            {{ $lowongan->persyaratan }}
+                                        </textarea>
+                                        </div>
+                                    </div>
+
+
                                 </div>
                             </div>
+
+                            <div class="card-footer text-end">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                                <a href="{{ route('informasi-lowongan') }}" class="btn btn-secondary">Kembali</a>
+                            </div>
                         </form>
+
 
                     </div>
                 </div>
             </div>
         </div>
+        <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
+        <script>
+            ClassicEditor
+                .create(document.querySelector('#persyaratan'))
+                .catch(error => {
+                    console.error(error);
+                });
+        </script>
+
     @endsection

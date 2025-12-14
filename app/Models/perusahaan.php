@@ -7,12 +7,15 @@ use App\Models\lowongan;
 
 class perusahaan extends Model
 {
+    protected $table = 'perusahaan';
+
     protected $fillable = [
         'nama_perusahaan',
-        'alama',
+        'alamat',
         'email',
         'nomor_npwp',
         'dokumen_legalitas',
+        'password',
     ];
     public function lowongans()
     {

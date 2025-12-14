@@ -16,7 +16,7 @@
             background-color: #0b5ed7
         }
     </style>
-\</head>
+</head>
 
 <body class="g-sidenav-show bg-gray-100">
     <div class="min-height-300 position-absolute w-100 bg-biru-koneks"></div>
@@ -35,11 +35,11 @@
 
     {{-- memanggil section script dari masing" halaman --}}
     @yield('scripts')
-        <script>
+    <script>
         function confirmLogout() {
             let keluar = confirm("Yakin Anda ingin logout?");
             if (keluar) {
-                window.location.href = "http://127.0.0.1:8000/login-penyedia/";
+                window.location.href = "{{ route('logout-perusahaan') }}";
             }
         }
     </script>
