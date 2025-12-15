@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Lowongan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
-use Illuminate\Validation\Rules\Password; 
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
     public function formRegister()
-    {  
+    {
         return view('user.register');
     }
 
@@ -21,10 +22,10 @@ class UserController extends Controller
        // Validasi input
         $request->validate([
             'email' => [
-                'required', 
-                'string', 
-                'email:dns',            
-                'unique:users'      
+                'required',
+                'string',
+                'email:dns',
+                'unique:users'
             ],
             'nama_depan'    => 'required|string|max:255',
             'nama_belakang' => 'required|string|max:255',
@@ -37,7 +38,7 @@ class UserController extends Controller
                     ->symbols()      // Harus ada Simbol (!, @, #, dll)
                     ->numbers()   // (Opsional) Kalau mau wajib ada angka juga
             ],
-        ], 
+        ],
         [
             'password.min'     => 'Password minimal harus 8 karakter.',
             'password.mixed'   => 'Password harus mengandung huruf Besar dan Kecil.',
@@ -53,13 +54,13 @@ class UserController extends Controller
             'nama_belakang' => $request->nama_belakang,
             'jenis_kelamin' => $request->jenis_kelamin,
             'password' => Hash::make($request->password),
-            
+
         ]);
         return redirect()->route('login')->with('success', 'Silakan login.');
     }
 
     public function formLogin()
-    {  
+    {
         return view('user.login');
     }
     public function login(Request $request)
@@ -71,15 +72,26 @@ class UserController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            //regenerasi session ID 
+            //regenerasi session ID
             $request->session()->regenerate();
             return redirect()->intended('/beranda')->with('success','Selamat Datang di Koneksibilitas!');
         }
-        return back()->with('error', 'Email atau password yang Anda masukkan salah.');    
+        return back()->with('error', 'Email atau password yang Anda masukkan salah.');
     }
 
-     public function Beranda()
-    {  
-        return view('user.beranda');
+    public function Beranda()
+    {
+         $data = Lowongan::with('perusahaan')->get();
+
+        return view('user.beranda', compact('data'));
+    }
+
+    public function show($id)
+    {
+        $lowongan = lowongan::with('perusahaan')
+            ->where('lowongan_id', $id)
+            ->firstOrFail();
+
+        return view('user.info-lowongan', compact('lowongan'));
     }
 }

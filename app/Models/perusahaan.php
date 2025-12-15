@@ -8,7 +8,7 @@ use App\Models\lowongan;
 class perusahaan extends Model
 {
     protected $table = 'perusahaan';
-
+    protected $primaryKey = 'perusahaan_id';
     protected $fillable = [
         'nama_perusahaan',
         'alamat',

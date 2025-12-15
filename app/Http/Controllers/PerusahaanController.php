@@ -87,15 +87,15 @@ class PerusahaanController extends Controller
             'kategori_pekerjaan' => 'required'
         ]);
 
-        $perusahaan = Session::get('perusahaan'); 
+        $perusahaan = Session::get('perusahaan');
 
-        Lowongan::create([    
-            'perusahaan_id' => $perusahaan->perusahaan_id, 
+        Lowongan::create([
+            'perusahaan_id' => $perusahaan->perusahaan_id,
             'posisi' => $request->posisi,
             'persyaratan' => $request->persyaratan,
             'kategori_pekerjaan' => $request->kategori_pekerjaan
         ]);
-        
+
         return redirect()->route('informasi-lowongan')->with('success', 'Lowongan berhasil ditambah.');
     }
 
@@ -148,6 +148,24 @@ class PerusahaanController extends Controller
 
         return redirect()->route('informasi-lowongan')
             ->with('success', 'Lowongan berhasil diperbarui.');
+    }
+
+    public function detailLowongan($id)
+    {
+        if (!Session::has('perusahaan')) {
+            return redirect()->route('login-perusahaan');
+        }
+
+        $perusahaan = Session::get('perusahaan');
+
+        $lowongan = Lowongan::with('perusahaan')
+            ->where('lowongan_id', $id)
+            ->where('perusahaan_id', $perusahaan->perusahaan_id)
+            ->firstOrFail();
+
+        return view('perusahaan.detail', [
+            'lowongan' => $lowongan
+        ]);
     }
 
 }

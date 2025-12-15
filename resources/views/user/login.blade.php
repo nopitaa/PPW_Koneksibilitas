@@ -26,11 +26,10 @@
       width: 360px;
       padding: 40px 30px;
       text-align: center;
-      height: 93%;
     }
 
     .cardimg {
-      height: 125.76px;
+      height: auto;
       width: 56px;
       padding-top: 10px;
       margin: auto;
@@ -99,10 +98,10 @@
         <span class="text-primary fs-4">✦</span>
         <span class="brand">KONEKSIBILITAS</span>
       </a>
-    </div>  
+    </div>
 
     <p class="p">Masuk Sebagai Pekerja</p>
-    
+
     <div class="card-body">
 
       <form id="form" action="{{ route('login.process') }}" method="POST">
@@ -128,7 +127,7 @@
           <label class="form-check-label" for="exampleCheck1">Dengan lanjut, Anda setuju pada Ketentuan, Privasi, dan Cookie KoneksiBilitas</label>
         </div>
         <button type="submit" class="btn btn-primary">Sign In</button>
-        
+
       </form>
       <a href="{{ route('register') }}" class="btn btn-outline-primary">Sign Up</a>
 

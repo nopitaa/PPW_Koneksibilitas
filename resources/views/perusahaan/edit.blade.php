@@ -23,14 +23,6 @@
                 <div class="col-md-12 mr-3 ml-3">
                     <div class="card">
 
-                        {{-- BUTTON SIMPAN --}}
-                        <div class="card-header pb-0">
-                            <div class="d-flex align-items-center">
-                                <button type="submit" form="form-edit-lowongan"
-                                    class="btn btn-success btn-sm ms-auto">Perbarui Lowongan</button>
-                            </div>
-                        </div>
-
                         {{-- FORM EDIT LOWONGAN --}}
                         <form id="form-edit-lowongan" action="{{ route('update-lowongan', $lowongan->lowongan_id) }}"
                             method="POST">
