@@ -16,8 +16,7 @@ Route::post('/login',[UserController::class,'login'])->name('login.process');
 Route::get('/register',[UserController::class,'formRegister'])->name('register');
 Route::post('/register',[UserController::class,'register'])->name('register.process');
 Route::get('/beranda',[UserController::class,'beranda'])->name('home');
-
-Route::get('/informasi-lowongan-kerja', function () {return view('user.info-lowongan');})->name('info_lowongan');
+Route::get('/lowongan/{id}', [UserController::class, 'show'])->name('lowongan.detail');
 
 Route::get('/user/lowongan-tersimpan', function () {
     $jobs = [
@@ -74,9 +73,9 @@ Route::get('/logout-perusahaan', [PerusahaanController::class, 'logout'])->name(
 Route::get('/informasi-lowongan', [PerusahaanController::class, 'GetLowongan'])->name('informasi-lowongan');
 Route::get('/informasi-lowongan/edit/{id}', [PerusahaanController::class, 'editLowongan'])->name('edit-lowongan');
 Route::put('/informasi-lowongan/update/{id}', [PerusahaanController::class, 'updateLowongan'])->name('update-lowongan');
-
 Route::get('/tambah-lowongan', [PerusahaanController::class,'formLowongan'])->name('tambah-lowongan');
 Route::post('/tambah-lowongan', [PerusahaanController::class,'addLowongan'])->name('tambah-lowongan.process');
+Route::get('/informasi-lowongan/{id}',[PerusahaanController::class, 'detailLowongan'])->name('detail-lowongan');
 
 //melani
 Route::get('/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');

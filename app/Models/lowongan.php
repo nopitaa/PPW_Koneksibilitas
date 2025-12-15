@@ -22,7 +22,7 @@ class lowongan extends Model
     ];
     public function perusahaan()
     {
-        return $this->belongsTo(perusahaan::class);
+        return $this->belongsTo(perusahaan::class, 'perusahaan_id', 'perusahaan_id');
         // punya relasi dengan lowongan many to many
     }
     public function lamaran()

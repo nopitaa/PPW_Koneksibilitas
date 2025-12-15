@@ -50,7 +50,7 @@
                                         <td class="border-end">{{ $l->kategori_pekerjaan }}</td>
 
                                         <td>
-                                            <a href="{{ url('/detail-lowongan/' . $l->lowongan_id) }}"
+                                            <a href="{{ route('detail-lowongan', $l->lowongan_id) }}"
                                                 class="btn btn-success btn-sm me-1" title="Lihat Detail">
                                                 <i class="bi bi-info-circle"></i>
                                             </a>
