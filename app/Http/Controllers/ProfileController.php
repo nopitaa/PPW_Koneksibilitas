@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profile;
+use App\Models\keterampilan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -29,7 +30,10 @@ class ProfileController extends Controller
     {
         $profile = $this->getProfile();
 
-        return view('user.profile-edit', compact('profile'));
+        // ambil daftar keterampilan yang tersedia
+        $allSkills = keterampilan::orderBy('nama_keterampilan')->get();
+
+        return view('user.profile-edit', compact('profile', 'allSkills'));
     }
 
     public function update(Request $request)
@@ -39,21 +43,30 @@ class ProfileController extends Controller
         $data = $request->validate([
             'name'      => ['nullable', 'string', 'max:100'],
             'about'     => ['nullable', 'string', 'max:1000'],
-            'skills'    => ['nullable', 'string'], // nanti diparse jadi array
+            'skills'    => ['nullable', 'array'], // menerima array pilihan
+            'skills.*'  => ['string'],
             'avatar'    => ['nullable', 'image', 'max:2048'], // 2MB
             'cv'        => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
             'resume'    => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
             'portfolio' => ['nullable', 'file', 'mimes:pdf,doc,docx,zip', 'max:5120'],
         ]);
 
-        // parsing skills: "Web, Mobile, UI" => ['Web', 'Mobile', 'UI']
+        // parsing skills: data bisa berupa array (dari checkbox) atau string (fallback)
         $skillsArray = null;
         if (!empty($data['skills'])) {
-            $skillsArray = collect(explode(',', $data['skills']))
-                ->map(fn ($s) => trim($s))
-                ->filter()
-                ->values()
-                ->all();
+            if (is_array($data['skills'])) {
+                $skillsArray = collect($data['skills'])
+                    ->map(fn ($s) => trim($s))
+                    ->filter()
+                    ->values()
+                    ->all();
+            } else {
+                $skillsArray = collect(explode(',', $data['skills']))
+                    ->map(fn ($s) => trim($s))
+                    ->filter()
+                    ->values()
+                    ->all();
+            }
         }
 
         // handle upload files (pakai disk public)

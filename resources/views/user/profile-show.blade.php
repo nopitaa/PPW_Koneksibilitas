@@ -7,9 +7,24 @@
 <div class="container py-5" style="max-width:780px; margin:auto;">
 
     @if(session('success'))
-        <div class="alert alert-success text-center">
-            {{ session('success') }}
+        <div id="notifBar" class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index:1080;">
+            <div class="alert alert-success fade show mb-0" role="alert">
+                {{ session('success') }}
+            </div>
         </div>
+
+        @push('body')
+        <script>
+        (function(){
+            const bar = document.getElementById('notifBar');
+            if (!bar) return;
+            // auto-dismiss after 1.5 seconds
+            setTimeout(function(){
+                if (bar && bar.parentNode) bar.parentNode.removeChild(bar);
+            }, 1500);
+        })();
+        </script>
+        @endpush
     @endif
 
     <div class="text-center mb-4">
@@ -55,7 +70,7 @@
         @if(!empty($profile->skills) && count($profile->skills))
             <div class="d-flex flex-wrap gap-2">
                 @foreach($profile->skills as $skill)
-                    <span class="badge bg-primary pill">{{ $skill }}</span>
+                    <span class="badge bg-primary rounded-pill px-3 py-2">{{ $skill }}</span>
                 @endforeach
             </div>
         @else
@@ -97,5 +112,49 @@
         @endif
     </div>
 
+        {{-- Logout button below portfolio --}}
+        <div class="mb-4 d-flex justify-content-end">
+            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                Logout
+            </button>
+
+            {{-- hidden logout form to be submitted when user confirms --}}
+            <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
+        </div>
+
+        {{-- Logout confirmation modal --}}
+        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="logoutModalLabel">Konfirmasi Logout</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Apakah Anda yakin ingin logout dari aplikasi?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" id="confirmLogout" class="btn btn-danger">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 </div>
 @endsection
+
+@push('body')
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    const btn = document.getElementById('confirmLogout');
+    if (!btn) return;
+    btn.addEventListener('click', function(){
+        const form = document.getElementById('logoutForm');
+        if (form) form.submit();
+    });
+});
+</script>
+@endpush

@@ -31,21 +31,17 @@
 
         {{-- Jenis Disabilitas --}}
         <div class="mb-3">
-            <label class="form-label fw-semibold">Jenis Disabilitas <span class="text-danger">*</span></label>
-            <div class="d-flex gap-4">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="jenis_disabilitas" id="jd1" value="tuna_wicara">
-                    <label class="form-check-label" for="jd1">Tuna Wicara</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="jenis_disabilitas" id="jd2" value="tuna_rungu" checked>
-                    <label class="form-check-label" for="jd2">Tuna Rungu</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="jenis_disabilitas" id="jd3" value="lainnya">
-                    <label class="form-check-label" for="jd3">Lainnya</label>
-                </div>
+          <label class="form-label fw-semibold">Jenis Disabilitas <span class="text-danger">*</span></label>
+          <div class="d-flex gap-4">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="jenis_disabilitas" id="jd_combined" value="tuna_rungu_wicara" {{ old('jenis_disabilitas', 'tuna_rungu_wicara') == 'tuna_rungu_wicara' ? 'checked' : '' }}>
+              <label class="form-check-label" for="jd_combined">Tuna Rungu / Tuna Wicara</label>
             </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="jenis_disabilitas" id="jd_lainnya" value="lainnya" {{ old('jenis_disabilitas') == 'lainnya' ? 'checked' : '' }}>
+              <label class="form-check-label" for="jd_lainnya">Lainnya</label>
+            </div>
+          </div>
         </div>
 
         {{-- Alat Bantu --}}
@@ -56,7 +52,20 @@
 
         {{-- CV --}}
         <div class="mb-3">
-            <label class="form-label fw-semibold d-block">CV</label>
+            <label class="form-label fw-semibold d-block">CV <span class="text-danger">*</span></label>
+            @if(isset($profile) && !empty($profile->cv_path))
+              <div class="mb-2">
+                <div class="file-chip">
+                  <i class="bi bi-file-earmark-text"></i>
+                  <div>
+                    <div>CV dari profil: <strong>{{ basename($profile->cv_path) }}</strong></div>
+                    <div><a href="{{ route('profile.view', 'cv') }}" target="_blank">Lihat CV</a> · Jika ingin mengganti, unggah file baru di bawah.</div>
+                  </div>
+                </div>
+              </div>
+              {{-- kirim tanda bahwa CV profil tersedia (hanya indikator untuk controller jika diperlukan) --}}
+              <input type="hidden" name="use_profile_cv" value="1">
+            @endif
             <input type="file" class="form-control" name="cv" accept=".pdf,.doc,.docx">
             <small class="text-muted">Format: PDF/DOC/DOCX · Maks 2MB</small>
             <div id="cv-info" class="file-chip mt-2 d-none"></div>
@@ -65,6 +74,15 @@
         {{-- Portofolio --}}
         <div class="mb-3">
             <label class="form-label fw-semibold d-block">Portofolio</label>
+            @if(isset($profile) && !empty($profile->portfolio_path))
+              <div class="mb-2 file-chip">
+                <i class="bi bi-folder2-open"></i>
+                <div>
+                  <div>Portofolio dari profil: <strong>{{ basename($profile->portfolio_path) }}</strong></div>
+                  <div><a href="{{ route('profile.view', 'portfolio') }}" target="_blank">Lihat Portofolio</a> · Jika ingin mengganti, unggah file baru di bawah.</div>
+                </div>
+              </div>
+            @endif
             <input type="file" class="form-control" name="portofolio" accept=".pdf,.doc,.docx,.zip">
             <small class="text-muted">Format: PDF/DOC/DOCX/ZIP · Maks 5MB</small>
             <div id="porto-info" class="file-chip mt-2 d-none"></div>
