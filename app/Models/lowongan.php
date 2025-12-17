@@ -3,31 +3,32 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\perusahaan;
+use App\Models\Perusahaan;
 use App\Models\Lamaran;
 
-
-class lowongan extends Model
+class Lowongan extends Model
 {
     protected $table = 'lowongan';
     protected $primaryKey = 'lowongan_id';
-    protected $foreignKey = 'perusahaan_id';
     public $incrementing = true;
     protected $keyType = 'int';
+
     protected $fillable = [
         'perusahaan_id',
         'posisi',
         'persyaratan',
         'kategori_pekerjaan',
     ];
+
+    // Relasi: Lowongan milik satu perusahaan
     public function perusahaan()
     {
-        return $this->belongsTo(perusahaan::class, 'perusahaan_id', 'perusahaan_id');
-        // punya relasi dengan lowongan many to many
+        return $this->belongsTo(Perusahaan::class, 'perusahaan_id', 'perusahaan_id');
     }
+
+    // Relasi: Lowongan memiliki banyak lamaran
     public function lamaran()
     {
-        return $this->hasMany(Lamaran::class);
-        // punya relasi dengan lowongan many to many
+        return $this->hasMany(Lamaran::class, 'lowongan_id', 'lowongan_id');
     }
 }
