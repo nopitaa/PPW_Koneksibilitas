@@ -127,8 +127,7 @@
         // Cek apakah ada session "success" yang dikirim dari Login
         @if (session('success'))
             Swal.fire({
-                title: "Login Berhasil",
-                text: "{{ session('success') }}", // Mengambil pesan dari Controller
+                title: "Lamaran berhasil dikirim",
                 icon: "success"
             });
         @endif

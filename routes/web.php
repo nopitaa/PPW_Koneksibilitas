@@ -11,7 +11,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PerusahaanController;
 
 // ROUTE BAGIAN USER
-Route::get('/',[UserController::class,'formLogin'])->name('login');
+// homepage should be beranda; login page at /login
+Route::get('/', function () { return redirect()->route('home'); });
+Route::get('/login',[UserController::class,'formLogin'])->name('login');
 Route::post('/login',[UserController::class,'login'])->name('login.process');
 Route::post('/logout',[UserController::class,'logout'])->name('logout');
 Route::get('/register',[UserController::class,'formRegister'])->name('register');
@@ -20,16 +22,19 @@ Route::get('/beranda',[UserController::class,'beranda'])->name('home');
 Route::get('/lowongan/{id}', [UserController::class, 'show'])->name('lowongan.detail');
 Route::get('/user/lowongan-tersimpan',[LowonganController::class, 'simpan'])->name('lowongan_tersimpan');
 
-Route::get('/lamar-pekerjaan/step1', function () {return view('user.lamar-step1');})->name('lamar.step1');
+// Lamar routes require authenticated users
+Route::middleware('auth')->group(function () {
+    Route::get('/lamar-pekerjaan/step1', function () {return view('user.lamar-step1');})->name('lamar.step1');
 
-Route::get('/lamar-pekerjaan/step2', function () {return view('user.lamar-step2');})->name('lamar.step2');
+    Route::get('/lamar-pekerjaan/step2', function () {return view('user.lamar-step2');})->name('lamar.step2');
 
-Route::get('/lamar-pekerjaan/step3', function () {
-    $profile = App\Models\Profile::first();
-    return view('user.lamar-step3', compact('profile'));
-})->name('lamar.step3');
+    Route::get('/lamar-pekerjaan/step3', function () {
+        $profile = App\Models\Profile::first();
+        return view('user.lamar-step3', compact('profile'));
+    })->name('lamar.step3');
 
-Route::post('/lamar-pekerjaan/submit', [LamarController::class, 'submit'])->name('lamar.submit');
+    Route::post('/lamar-pekerjaan/submit', [LamarController::class, 'submit'])->name('lamar.submit');
+});
 
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');

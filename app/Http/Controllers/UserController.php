@@ -72,9 +72,10 @@ class UserController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            //regenerasi session ID
+            // regenerasi session ID
             $request->session()->regenerate();
-            return redirect()->intended('/beranda')->with('success','Selamat Datang di Koneksibilitas!');
+            // selalu redirect ke beranda setelah login, jangan ke intended (lamar dsb)
+            return redirect()->route('home')->with('success','Selamat Datang di Koneksibilitas!');
         }
         return back()->with('error', 'Email atau password yang Anda masukkan salah.');
     }

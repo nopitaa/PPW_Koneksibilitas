@@ -108,11 +108,26 @@
             <small class="text-muted">Bisa pilih banyak file · PDF/DOC/DOCX/JPG/PNG/ZIP · Maks 5MB per file</small>
         </div>
 
-        <div class="text-center">
+        @php
+          $userComplete = Auth::check() && (!empty(Auth::user()->nama_depan) || !empty(Auth::user()->email) || !empty(Auth::user()->jenis_kelamin));
+          $profileHasCv = isset($profile) && !empty($profile->cv_path);
+          $canSubmit = $userComplete && $profileHasCv;
+        @endphp
+
+        @if(!$canSubmit)
+          <div class="alert alert-warning">
+            Sebelum mengirim lamaran, lengkapi profil Anda terlebih dahulu. Pastikan Nama, Jenis Kelamin, Email, dan CV terisi di halaman profil.
+          </div>
+          <div class="text-center">
+            <a href="{{ route('profile.edit') }}" class="btn btn-outline-primary px-5 py-2 rounded-pill fw-semibold">Lengkapi Profil</a>
+          </div>
+        @else
+          <div class="text-center">
             <button type="submit" class="btn btn-primary px-5 py-2 rounded-pill fw-semibold">
-                Kirim Lamaran
+              Kirim Lamaran
             </button>
-        </div>
+          </div>
+        @endif
     </form>
 </div>
 

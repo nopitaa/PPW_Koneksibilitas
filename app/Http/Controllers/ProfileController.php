@@ -33,6 +33,29 @@ class ProfileController extends Controller
         // ambil daftar keterampilan yang tersedia
         $allSkills = keterampilan::orderBy('nama_keterampilan')->get();
 
+        // jika belum ada data di DB, suplai daftar default agar UI menampilkan pilihan
+        if ($allSkills->isEmpty()) {
+            $defaults = [
+                'Design Grafis',
+                'Mobile Developer',
+                'Web Development',
+                'UI/UX Designer',
+                'Data Analyst',
+                'SEO',
+                'Copywriting',
+                'Social Media Management',
+                'Project Management',
+                'DevOps',
+            ];
+
+            $allSkills = collect($defaults)->map(function ($name, $i) {
+                return (object) [
+                    'keterampilan_id' => 'dflt-'.($i+1),
+                    'nama_keterampilan' => $name,
+                ];
+            });
+        }
+
         return view('user.profile-edit', compact('profile', 'allSkills'));
     }
 

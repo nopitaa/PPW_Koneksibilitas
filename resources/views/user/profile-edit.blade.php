@@ -31,7 +31,26 @@
                     .profile-left { text-align:center; padding:1.25rem; border-right:1px solid #f1f4f8; }
                     .profile-right { padding:1.25rem; }
                     .avatar-lg { width:120px; height:120px; border-radius:50%; object-fit:cover; border:4px solid rgba(13,110,253,0.08); }
-                    .skill-btn.btn-checked { background:var(--brand); color:#fff; border-color:var(--brand); }
+                    /* Skill pills */
+                    .skill-btn {
+                        padding: .35rem .9rem;
+                        font-size: .85rem;
+                        border-radius: 999px;
+                        cursor: pointer;
+                        transition: all .12s ease-in-out;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: .35rem;
+                        border-width: 1.25px;
+                    }
+                    .skill-btn.btn-checked,
+                    .skill-btn.active {
+                        background: var(--brand);
+                        color: #fff !important;
+                        border-color: var(--brand) !important;
+                        box-shadow: 0 2px 6px rgba(13,110,253,0.15);
+                    }
+                    .skill-btn:hover { transform: translateY(-1px); }
                     .file-note { font-size:0.85rem; color:#6c757d; }
                 </style>
                 @endpush
@@ -55,7 +74,7 @@
 
                             <div class="w-100 mt-3 px-3">
                                 <label class="form-label fw-semibold small">Nama</label>
-                                <input type="text" name="name" class="form-control form-control-sm text-center" value="{{ old('name', $profile->name) }}" placeholder="Nama lengkap">
+                                <input type="text" name="name" class="form-control form-control-sm text-center" value="{{ old('name', $profile->name ?? (Auth::check() ? trim(Auth::user()->nama_depan . ' ' . (Auth::user()->nama_belakang ?? '')) : '')) }}" placeholder="Nama lengkap">
                             </div>
                         </div>
 
@@ -76,7 +95,7 @@
                                             }
                                     @endphp
 
-                                    @if(isset($allSkills) && $allSkills->count())
+                                        @if(isset($allSkills) && $allSkills->count())
                                             <div class="d-flex flex-wrap gap-2">
                                                     @foreach($allSkills as $skill)
                                                             <input type="checkbox" class="btn-check" name="skills[]" value="{{ $skill->nama_keterampilan }}" id="skill-{{ $skill->keterampilan_id }}" autocomplete="off" {{ in_array($skill->nama_keterampilan, (array) $selectedSkills) ? 'checked' : '' }}>
@@ -84,10 +103,9 @@
                                                     @endforeach
                                             </div>
                                             <small class="text-muted d-block mt-2">Pilih satu atau beberapa keterampilan.</small>
-                                    @else
-                                            <input type="text" name="skills" class="form-control" value="{{ old('skills', $profile->skills ? implode(', ', $profile->skills) : '') }}" placeholder="Contoh: Web Development, Mobile Development">
-                                            <small class="text-muted">Pisahkan dengan koma ( , )</small>
-                                    @endif
+                                        @else
+                                            <div class="alert alert-info p-2">Belum ada daftar keterampilan. Hubungi admin untuk menambahkan pilihan keterampilan.</div>
+                                        @endif
                             </div>
 
                             <div class="row">
@@ -142,6 +160,27 @@
                 img.src = ev.target.result;
             };
             reader.readAsDataURL(file);
+        });
+    })();
+</script>
+<script>
+    // sync btn-check state with label visual active class
+    (function(){
+        const checks = document.querySelectorAll('.btn-check');
+        if (!checks.length) return;
+        checks.forEach(ch => {
+            const lbl = document.querySelector('label[for="'+ch.id+'"]');
+            const sync = () => {
+                if (!lbl) return;
+                if (ch.checked) {
+                    lbl.classList.add('btn-checked', 'active');
+                } else {
+                    lbl.classList.remove('btn-checked', 'active');
+                }
+            };
+            // init
+            sync();
+            ch.addEventListener('change', sync);
         });
     })();
 </script>

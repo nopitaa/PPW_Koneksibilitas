@@ -18,18 +18,18 @@
         @csrf
         <div class="mb-3">
             <label class="form-label fw-semibold">Nama Lengkap (Sesuai KTP) <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="nama" placeholder="Masukkan nama lengkap" value="Ruby Chan" required>
+            <input type="text" class="form-control" name="nama" placeholder="Masukkan nama lengkap" value="{{ old('nama', (Auth::check() ? (Auth::user()->nama_depan . ' ' . (Auth::user()->nama_belakang ?? '')) : '')) }}" required>
         </div>
 
         <div class="mb-3">
             <label class="form-label fw-semibold">Jenis Kelamin <span class="text-danger">*</span></label>
             <div class="d-flex gap-4 mt-1">
                 <div>
-                    <input class="form-check-input" type="radio" name="gender" id="laki" value="Laki-laki">
+                    <input class="form-check-input" type="radio" name="gender" id="laki" value="Laki-laki" {{ old('gender', (Auth::check() ? Auth::user()->jenis_kelamin : '')) == 'Laki-laki' ? 'checked' : '' }}>
                     <label class="form-check-label" for="laki">Laki-laki</label>
                 </div>
                 <div>
-                    <input class="form-check-input" type="radio" name="gender" id="perempuan" value="Perempuan" checked>
+                    <input class="form-check-input" type="radio" name="gender" id="perempuan" value="Perempuan" {{ old('gender', (Auth::check() ? Auth::user()->jenis_kelamin : 'Perempuan')) == 'Perempuan' ? 'checked' : '' }}>
                     <label class="form-check-label" for="perempuan">Perempuan</label>
                 </div>
             </div>
@@ -37,17 +37,17 @@
 
         <div class="mb-3">
             <label class="form-label fw-semibold">Nomor Hp <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="no_hp" placeholder="Masukkan nomor HP aktif" required>
+            <input type="text" class="form-control" name="no_hp" placeholder="Masukkan nomor HP aktif" value="{{ old('no_hp', '') }}" required>
         </div>
 
         <div class="mb-3">
             <label class="form-label fw-semibold">Alamat Lengkap <span class="text-danger">*</span></label>
-            <textarea class="form-control" name="alamat" rows="2" required>Jl. Pandjaitan No. 111, Kec. Purwokerto, Kab. Banyumas</textarea>
+            <textarea class="form-control" name="alamat" rows="2" required>{{ old('alamat', '') }}</textarea>
         </div>
 
         <div class="mb-4">
             <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
-            <input type="email" class="form-control" name="email" placeholder="Masukkan email aktif" required>
+            <input type="email" class="form-control" name="email" placeholder="Masukkan email aktif" value="{{ old('email', (Auth::check() ? Auth::user()->email : '')) }}" required>
         </div>
          <div class="text-center">
             <button type="button"
