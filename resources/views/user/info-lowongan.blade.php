@@ -111,9 +111,10 @@
 
     <!-- Top Bar -->
     <div class="top-bar">
-        <a href="{{ route('home') }}" class="back-icon">
-            <i class="bi bi-arrow-left"></i>
+        <a href="{{ url()->previous() ?? route('home') }}" class="back-icon">
+        <i class="bi bi-arrow-left"></i>
         </a>
+
         <h2 class="judul-halaman">Informasi Lowongan</h2>
         <i class="bi bi-bookmark save-icon" id="saveIcon"></i>
     </div>

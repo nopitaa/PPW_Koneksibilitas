@@ -17,14 +17,7 @@ Route::get('/register',[UserController::class,'formRegister'])->name('register')
 Route::post('/register',[UserController::class,'register'])->name('register.process');
 Route::get('/beranda',[UserController::class,'beranda'])->name('home');
 Route::get('/lowongan/{id}', [UserController::class, 'show'])->name('lowongan.detail');
-
-Route::get('/user/lowongan-tersimpan', function () {
-    $jobs = [
-        ['title' => 'Admin Toko Online', 'company' => 'GlobalTrans Indo'],
-        ['title' => 'Desain Grafis', 'company' => 'GlobalTrans Indo'],
-        ['title' => 'Data Entry Operator', 'company' => 'GlobalTrans Indo'],
-        ['title' => 'Admin Sosial Media', 'company' => 'GlobalTrans Indo'],
-    ];return view('user.lowongan-tersimpan', compact('jobs'));})->name('lowongan_tersimpan');
+Route::get('/user/lowongan-tersimpan',[LowonganController::class, 'simpan'])->name('lowongan_tersimpan');
 
 Route::get('/lamar-pekerjaan/step1', function () {return view('user.lamar-step1');})->name('lamar.step1');
 
