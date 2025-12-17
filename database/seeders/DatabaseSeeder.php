@@ -21,5 +21,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // seed keterampilan default
+        $this->call(\Database\Seeders\KeterampilanSeeder::class);
     }
 }

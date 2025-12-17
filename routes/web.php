@@ -13,6 +13,7 @@ use App\Http\Controllers\PerusahaanController;
 // ROUTE BAGIAN USER
 Route::get('/',[UserController::class,'formLogin'])->name('login');
 Route::post('/login',[UserController::class,'login'])->name('login.process');
+Route::post('/logout',[UserController::class,'logout'])->name('logout');
 Route::get('/register',[UserController::class,'formRegister'])->name('register');
 Route::post('/register',[UserController::class,'register'])->name('register.process');
 Route::get('/beranda',[UserController::class,'beranda'])->name('home');
@@ -23,7 +24,10 @@ Route::get('/lamar-pekerjaan/step1', function () {return view('user.lamar-step1'
 
 Route::get('/lamar-pekerjaan/step2', function () {return view('user.lamar-step2');})->name('lamar.step2');
 
-Route::get('/lamar-pekerjaan/step3', function () {return view('user.lamar-step3');})->name('lamar.step3');
+Route::get('/lamar-pekerjaan/step3', function () {
+    $profile = App\Models\Profile::first();
+    return view('user.lamar-step3', compact('profile'));
+})->name('lamar.step3');
 
 Route::post('/lamar-pekerjaan/submit', [LamarController::class, 'submit'])->name('lamar.submit');
 
