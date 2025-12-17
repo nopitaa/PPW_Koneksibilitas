@@ -8,7 +8,13 @@ use App\Models\User;
 
 class Lamaran extends Model
 {
+    protected $table = 'lamaran'; // ⬅️ WAJIB
+
+    protected $primaryKey = 'lamaran_id';
+
     protected $fillable = [
+        'user_id',
+        'lowongan_id',
         'nama_lengkap',
         'jenis_kelamin',
         'nomor_hp',
@@ -25,15 +31,13 @@ class Lamaran extends Model
         'portofolio',
     ];
 
-    public function lowongans()
+    public function lowongan()
     {
-        return $this->belongsTo(Lowongan::class);
-        // punya relasi dengan lowongan many to many
+        return $this->belongsTo(Lowongan::class, 'lowongan_id', 'lowongan_id');
     }
 
-    public function users()
+    public function user()
     {
-        return $this->belongsTo(User::class);
-        // punya relasi dengan lowongan many to many
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 }

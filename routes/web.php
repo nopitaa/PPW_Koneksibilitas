@@ -8,6 +8,9 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Models\Lowongan;
+use App\Models\Profile;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PerusahaanController;
 
 // ROUTE BAGIAN USER
@@ -24,23 +27,51 @@ Route::get('/user/lowongan-tersimpan',[LowonganController::class, 'simpan'])->na
 
 // Lamar routes require authenticated users
 Route::middleware('auth')->group(function () {
-    Route::get('/lamar-pekerjaan/step1', function () {return view('user.lamar-step1');})->name('lamar.step1');
 
-    Route::get('/lamar-pekerjaan/step2', function () {return view('user.lamar-step2');})->name('lamar.step2');
+    Route::get('/lamar-pekerjaan/{lowongan}/step1', function (Lowongan $lowongan) {
+        return view('user.lamar-step1', compact('lowongan'));
+    })->name('lamar.step1');
 
-    Route::get('/lamar-pekerjaan/step3', function () {
-        $profile = App\Models\Profile::first();
-        return view('user.lamar-step3', compact('profile'));
+    Route::post('/lamar-pekerjaan/{lowongan}/step1', 
+        [LamarController::class, 'storeStep1']
+    )->name('lamar.step1.store');
+
+
+    Route::get('/lamar-pekerjaan/{lowongan}/step2', function (Lowongan $lowongan) {
+        return view('user.lamar-step2', compact('lowongan'));
+    })->name('lamar.step2');
+
+    Route::post('/lamar-pekerjaan/{lowongan}/step2',
+        [LamarController::class, 'storeStep2']
+    )->name('lamar.step2.store');
+
+
+    Route::get('/lamar-pekerjaan/{lowongan}/step3', function (Lowongan $lowongan) {
+        $profile = Profile::where('user_id', Auth::id())->first();
+        return view('user.lamar-step3', compact('lowongan', 'profile'));
     })->name('lamar.step3');
 
-    Route::post('/lamar-pekerjaan/submit', [LamarController::class, 'submit'])->name('lamar.submit');
+    Route::post('/lamar-pekerjaan/{lowongan}/submit',
+        [LamarController::class, 'submit']
+    )->name('lamar.submit');
 });
 
-Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-Route::get('/profile/view/{type}', [ProfileController::class, 'view'])
-    ->name('profile.view');
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/profile', [ProfileController::class, 'show'])
+        ->name('profile.show');
+
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::post('/profile/update', [ProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::get('/profile/view/{type}', [ProfileController::class, 'view'])
+        ->name('profile.view');
+
+});
 
 // ROUTE PELATIHAN
 // SEO

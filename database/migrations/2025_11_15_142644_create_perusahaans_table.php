@@ -12,18 +12,16 @@ return new class extends Migration
             $table->id('perusahaan_id');
             $table->string('nama_perusahaan');
             $table->string('alamat');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->integer('nomor_npwp');
             $table->text('dokumen_legalitas');
+            $table->string('password'); 
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('perusahaans');
+        Schema::dropIfExists('perusahaan'); 
     }
 };

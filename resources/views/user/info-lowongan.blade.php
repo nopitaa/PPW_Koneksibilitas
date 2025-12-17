@@ -153,9 +153,10 @@
     </div>
 
     <button class="btn-lamar"
-        onclick="window.location.href='{{ route('lamar.step1') }}'">
-        Lamar Pekerjaan
-    </button>
+    onclick="window.location.href='{{ route('lamar.step1', ['lowongan' => $lowongan->lowongan_id]) }}'">
+    Lamar Pekerjaan
+</button>
+
 
 </div>
 

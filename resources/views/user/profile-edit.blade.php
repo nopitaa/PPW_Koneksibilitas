@@ -74,7 +74,7 @@
 
                             <div class="w-100 mt-3 px-3">
                                 <label class="form-label fw-semibold small">Nama</label>
-                                <input type="text" name="name" class="form-control form-control-sm text-center" value="{{ old('name', $profile->name ?? (Auth::check() ? trim(Auth::user()->nama_depan . ' ' . (Auth::user()->nama_belakang ?? '')) : '')) }}" placeholder="Nama lengkap">
+                                <input type="text" name="name" class="form-control form-control-sm text-center" value="{{ old('name', $profile->name) }}" placeholder="Nama lengkap">
                             </div>
                         </div>
 
