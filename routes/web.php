@@ -79,7 +79,7 @@ Route::get('/informasi-lowongan/{id}',[PerusahaanController::class, 'detailLowon
 
 //melani
 Route::get('/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');
-Route::get('/perusahaan', [CompanyController::class, 'index'])->name('perusahaan');
+Route::get('/admin/perusahaan', [CompanyController::class, 'index'])->name('perusahaan');
 
 //melani untuk status admin
 Route::post('/companies/{id}/approve', [CompanyController::class, 'approve'])->name('companies.approve');
