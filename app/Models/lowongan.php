@@ -14,11 +14,29 @@ class Lowongan extends Model
         'perusahaan_id',
         'posisi',
         'persyaratan',
-        'kategori_pekerjaan'
+        'kategori_pekerjaan',
+        'approved_at', // 🔥 PENTING
     ];
+
+    // ============================
+    // RELASI
+    // ============================
 
     public function perusahaan()
     {
-        return $this->belongsTo(Perusahaan::class, 'perusahaan_id', 'perusahaan_id');
+        return $this->belongsTo(
+            Perusahaan::class,
+            'perusahaan_id',
+            'perusahaan_id'
+        );
+    }
+
+    public function lamaran()
+    {
+        return $this->hasMany(
+            Lamaran::class,
+            'lowongan_id',
+            'lowongan_id'
+        );
     }
 }
