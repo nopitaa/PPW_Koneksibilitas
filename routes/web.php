@@ -19,6 +19,9 @@ Route::post('/register',[UserController::class,'register'])->name('register.proc
 Route::get('/beranda',[UserController::class,'beranda'])->name('home');
 Route::get('/lowongan/{id}', [UserController::class, 'show'])->name('lowongan.detail');
 Route::get('/user/lowongan-tersimpan',[LowonganController::class, 'simpan'])->name('lowongan_tersimpan');
+Route::post('/lowongan/{id}/simpan',[LowonganController::class, 'toggleSimpanSession'])->name('lowongan.simpan');
+Route::get('/simpan',[LowonganController::class, 'tersimpanSession'])->name('lowongan_tersimpan');
+
 
 Route::get('/lamar-pekerjaan/step1', function () {return view('user.lamar-step1');})->name('lamar.step1');
 
