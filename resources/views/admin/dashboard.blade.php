@@ -13,6 +13,8 @@
     @if(session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
+
+    {{-- FORM PENCARIAN --}}
     <form method="GET" action="{{ route('dashboard') }}" class="mb-3">
         <div class="row g-2">
             <div class="col-md-4">
@@ -27,31 +29,44 @@
         </div>
     </form>
 
+    {{-- TABEL --}}
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>ID Perusahaan</th>
+                <th>ID Lowongan</th>
                 <th>Nama Perusahaan</th>
                 <th>Posisi</th>
                 <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($companies as $company)
+            @forelse($lowongans as $lowongan)
                 <tr>
-                    <td>{{ $company->company_id }}</td>
-                    <td>{{ $company->name }}</td>
-                    <td>{{ $company->position }}</td>
+                    <td>{{ $lowongan->lowongan_id }}</td>
+                    <td>{{ $lowongan->perusahaan->nama_perusahaan ?? '-' }}</td>
+                    <td>{{ $lowongan->posisi }}</td>
                     <td>
-                        <form action="{{ route('companies.approve', $company->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            <button class="btn btn-success btn-sm">Setujui</button>
-                        </form>
+                        @if($lowongan->approved_at)
+                            <span class="badge bg-success">
+                                Disetujui
+                            </span>
+                        @else
+                            <form action="{{ route('lowongan.approve', $lowongan->lowongan_id) }}"
+                                method="POST" class="d-inline">
+                                @csrf
+                                <button class="btn btn-success btn-sm">
+                                    Setujui
+                                </button>
+                            </form>
 
-                        <form action="{{ route('companies.reject', $company->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            <button class="btn btn-danger btn-sm">Tolak</button>
-                        </form>
+                            <form action="{{ route('lowongan.reject', $lowongan->lowongan_id) }}"
+                                method="POST" class="d-inline">
+                                @csrf
+                                <button class="btn btn-danger btn-sm">
+                                    Tolak
+                                </button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
             @empty

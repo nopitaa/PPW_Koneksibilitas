@@ -6,7 +6,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LamarController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PerusahaanController;
 
@@ -77,18 +76,13 @@ Route::get('/tambah-lowongan', [PerusahaanController::class,'formLowongan'])->na
 Route::post('/tambah-lowongan', [PerusahaanController::class,'addLowongan'])->name('tambah-lowongan.process');
 Route::get('/informasi-lowongan/{id}',[PerusahaanController::class, 'detailLowongan'])->name('detail-lowongan');
 
-//melani
+//admin
 Route::get('/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');
-Route::get('/admin/perusahaan', [CompanyController::class, 'index'])->name('perusahaan');
-
-//melani untuk status admin
-Route::post('/companies/{id}/approve', [CompanyController::class, 'approve'])->name('companies.approve');
-Route::post('/companies/{id}/reject', [CompanyController::class, 'reject'])->name('companies.reject');
-
-// Tampil halaman login admin
-Route::get('/admin/login', function () {return view('auth.login-admin');})->name('admin.login');
-
-// Proses login admin (POST)
-Route::post('/admin/login', function () {return redirect()->route('dashboard');})->name('admin.login.submit');
-Route::get('/admin/logout', function () {session()->flush(); return redirect('/admin/login'); })->name('admin.logout');
+Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+Route::get('/admin/perusahaan', [CompanyController::class, 'index'])->name('perusahaan'); 
+Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.submit');
+Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+Route::post('/admin/lowongan/{id}/approve', [AdminController::class, 'approve'])->name('lowongan.approve');
+Route::post('/admin/lowongan/{id}/reject', [AdminController::class, 'reject'])->name('lowongan.reject');
 

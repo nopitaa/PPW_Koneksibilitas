@@ -7,7 +7,6 @@
 
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
@@ -33,12 +32,6 @@
       margin-bottom: 15px;
     }
 
-    .brand-text {
-      color: #007bff;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
     .title {
       font-size: 20px;
       font-weight: 600;
@@ -61,25 +54,11 @@
       padding: 10px;
     }
 
-    .form-control:focus {
-      box-shadow: none;
-      border-color: #ced4da;
-    }
-
     .btn-primary {
       background-color: #007bff;
       border: none;
       padding: 10px;
       font-weight: 600;
-    }
-
-    .btn-outline-primary {
-      border-radius: 999px;
-      padding: 10px;
-    }
-
-    .form-check-label {
-      font-size: 13px;
     }
 
     .password-toggle {
@@ -91,21 +70,33 @@
 
 <div class="login-card text-center">
 
-  <!-- Logo -->
   <img src="{{ asset('login.png') }}" class="login-image" alt="Login">
 
   <div class="title">
     Masuk sebagai <span>Admin</span>
   </div>
 
-  <!-- Form -->
-  <form>
+  {{-- ALERT ERROR --}}
+  <div id="alertTerms" class="alert alert-danger d-none">
+    Silakan centang persetujuan terlebih dahulu sebelum login.
+  </div>
+
+  {{-- VALIDASI BACKEND --}}
+  @if ($errors->any())
+    <div class="alert alert-danger">
+      {{ $errors->first() }}
+    </div>
+  @endif
+
+  <form method="POST" action="{{ route('admin.login') }}">
+    @csrf
+
     <!-- Email -->
     <div class="mb-3 input-group">
       <span class="input-group-text">
         <i class="bi bi-at"></i>
       </span>
-      <input type="email" class="form-control" placeholder="Email">
+      <input type="email" name="email" class="form-control" placeholder="Email" required>
     </div>
 
     <!-- Password -->
@@ -113,7 +104,7 @@
       <span class="input-group-text">
         <i class="bi bi-lock"></i>
       </span>
-      <input type="password" id="password" class="form-control" placeholder="Password">
+      <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
       <span class="input-group-text password-toggle" onclick="togglePassword()">
         <i id="eyeIcon" class="bi bi-eye"></i>
       </span>
@@ -121,16 +112,15 @@
 
     <!-- Checkbox -->
     <div class="form-check text-start mb-3">
-      <input class="form-check-input" type="checkbox" id="terms">
+      <input class="form-check-input" type="checkbox" id="terms" name="terms">
       <label class="form-check-label" for="terms">
         Dengan lanjut, anda setuju pada ketentuan, privasi, dan cookie koneksibilitas
       </label>
     </div>
 
     <!-- Button -->
-    <button type="button"
-      onclick="window.location.href='{{ route('dashboard') }}'"
-      class="btn btn-primary w-100 rounded-pill mb-2">
+    <button type="submit" id="loginBtn"
+      class="btn btn-primary w-100 rounded-pill mb-2" disabled>
       Login
     </button>
 
@@ -138,6 +128,24 @@
 </div>
 
 <script>
+  const terms = document.getElementById('terms');
+  const loginBtn = document.getElementById('loginBtn');
+  const alertTerms = document.getElementById('alertTerms');
+
+  terms.addEventListener('change', function () {
+    loginBtn.disabled = !this.checked;
+    if (this.checked) {
+      alertTerms.classList.add('d-none');
+    }
+  });
+
+  document.querySelector('form').addEventListener('submit', function (e) {
+    if (!terms.checked) {
+      e.preventDefault();
+      alertTerms.classList.remove('d-none');
+    }
+  });
+
   function togglePassword() {
     const password = document.getElementById('password');
     const eyeIcon = document.getElementById('eyeIcon');

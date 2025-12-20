@@ -58,17 +58,12 @@ body {
       color: #fff;
       font-weight: 600;
     }
-
-
-    .sidebar a:hover {
-      color: #000;
+    .text-sm {
+        font-size: 13px;
     }
 
-    .logout {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      color: red;
-      text-decoration: none;
-      font-weight: 500;
+    .sidebar a:hover {
+      color: #007bff;
     }
 
     .brand {
@@ -88,6 +83,21 @@ body {
       color: #007bff;
       font-weight: 600;
       font-size: 14px;
+    }
+    table {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: #007bff;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    .table-custom th {
+        background-color: #f8f9fa;
+    }
+
+    .table-custom .badge {
+        font-size: 13px;
+        font-weight: 600;
     }
   </style>
 </head>
@@ -115,7 +125,7 @@ body {
     <!-- Main content -->
     <div class="col-10 p-4">
       <div class="d-flex justify-content-end mb-3">
-      <a href="#" class="text-danger fw-bold text-decoration-none" onclick="confirmLogout()">Logout</a>
+      <a href="#" class="text-danger fw-bold text-decoration-none text-sm" onclick="confirmLogout()">Logout</a>
 
       <script>
         function confirmLogout() {
