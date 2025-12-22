@@ -20,6 +20,7 @@ Route::get('/lowongan/{id}', [UserController::class, 'show'])->name('lowongan.de
 Route::get('/user/lowongan-tersimpan',[LowonganController::class, 'simpan'])->name('lowongan_tersimpan');
 Route::post('/lowongan/{id}/simpan',[LowonganController::class, 'toggleSimpanSession'])->name('lowongan.simpan');
 Route::get('/simpan',[LowonganController::class, 'tersimpanSession'])->name('lowongan_tersimpan');
+Route::get('/status-lamaran', [UserController::class, 'statuslamaran'])->name('status.lamaran');
 
 
 Route::get('/lamar-pekerjaan/step1', function () {return view('user.lamar-step1');})->name('lamar.step1');

@@ -8,6 +8,8 @@ use App\Models\User;
 
 class Lamaran extends Model
 {
+    protected $table = 'lamaran';
+    
     protected $fillable = [
         'nama_lengkap',
         'jenis_kelamin',

@@ -12,7 +12,6 @@ use App\Models\keterampilan;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -41,11 +40,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -56,8 +50,9 @@ class User extends Authenticatable
 
     public function lamaran()
     {
-        return $this->hasMany(Lamaran::class);
+        return $this->hasMany(Lamaran::class, 'user_id', 'user_id');
         // punya relasi dengan lowongan many to many
+        // user id ad foreign key in lamaran table
     }
     public function dashboard_user()
     {

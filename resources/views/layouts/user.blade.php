@@ -143,7 +143,7 @@
           <a class="nav-link {{ request()->routeIs('lowongan_tersimpan') ? 'active' : '' }}" href="{{ route('lowongan_tersimpan') }}">Simpan</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ request()->is('status') ? 'active' : '' }}" href="#">Status</a>
+          <a class="nav-link {{ request()->is('status') ? 'active' : '' }}" href="{{ route ('status.lamaran') }}">Status</a>
         </li>
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('profile.*') ? 'active' : '' }}" href="{{ route('profile.show') }}">Profile</a>

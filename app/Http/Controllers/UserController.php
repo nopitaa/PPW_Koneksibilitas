@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Lowongan;
+use App\Models\Lamaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -93,6 +94,20 @@ class UserController extends Controller
             ->firstOrFail();
 
         return view('user.info-lowongan', compact('lowongan'));
+    }
+
+   public function statuslamaran(Request $request) 
+    {
+        $userId = Auth::id();
+        $status = $request->query('status');
+        $query = Lamaran::with(['lowongan.perusahaan'])
+                ->where('user_id', $userId);
+
+        if ($status && $status !== 'Semua') {
+            $query->where('status', $status);
+        }
+        $data = $query->get();
+        return view('user.status-lamaran', compact('data'));
     }
 
     public function logout(Request $request)
