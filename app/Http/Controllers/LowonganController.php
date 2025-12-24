@@ -16,7 +16,6 @@ class LowonganController extends Controller
         return view('user.info-lowongan', compact('lowongan', 'isSaved'));
     }
 
-    // ✅ INI YANG KURANG
     public function simpan()
     {
         return $this->tersimpanSession();

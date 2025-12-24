@@ -12,9 +12,6 @@ use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
-    /* =========================
-     * REGISTER
-     * ========================= */
     public function formRegister()
     {
         return view('user.register');
@@ -40,13 +37,6 @@ class UserController extends Controller
                     ->symbols()
                     ->numbers()
             ],
-        ], [
-            'email.unique'     => 'Email sudah terdaftar.',
-            'email.email'      => 'Format email tidak valid.',
-            'password.min'     => 'Password minimal 8 karakter.',
-            'password.mixed'   => 'Password harus mengandung huruf besar dan kecil.',
-            'password.symbols' => 'Password harus mengandung simbol.',
-            'password.letters' => 'Password harus mengandung huruf.',
         ]);
 
         User::create([
@@ -57,12 +47,9 @@ class UserController extends Controller
             'password'      => Hash::make($request->password),
         ]);
 
-        return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login.');
+        return redirect()->route('login')->with('success', 'Registrasi berhasil.');
     }
 
-    /* =========================
-     * LOGIN
-     * ========================= */
     public function formLogin()
     {
         return view('user.login');
@@ -77,24 +64,18 @@ class UserController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('home')->with('success', 'Selamat datang di Koneksibilitas!');
+            return redirect()->route('home');
         }
 
         return back()->with('error', 'Email atau password salah.');
     }
 
-    /* =========================
-     * BERANDA LOWONGAN
-     * ========================= */
     public function beranda()
     {
         $data = Lowongan::with('perusahaan')->get();
         return view('user.beranda', compact('data'));
     }
 
-    /* =========================
-     * DETAIL LOWONGAN
-     * ========================= */
     public function show($id)
     {
         $lowongan = Lowongan::with('perusahaan')
@@ -103,12 +84,14 @@ class UserController extends Controller
 
         return view('user.info-lowongan', compact('lowongan'));
     }
-   public function statuslamaran(Request $request) 
+
+    public function statuslamaran(Request $request)
     {
         $userId = Auth::id();
         $status = $request->query('status');
+
         $query = Lamaran::with(['lowongan.perusahaan'])
-                ->where('user_id', $userId);
+            ->where('user_id', $userId);
 
         if ($status && $status !== 'Semua') {
             $query->where('status', $status);
@@ -119,13 +102,13 @@ class UserController extends Controller
         return view('user.status-lamaran', compact('data'));
     }
 
-
     public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Anda berhasil logout.');
+        return redirect()->route('login')
+            ->with('success', 'Anda berhasil logout.');
     }
 }
