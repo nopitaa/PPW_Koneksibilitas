@@ -119,13 +119,6 @@ class UserController extends Controller
         return view('user.status-lamaran', compact('data'));
     }
 
-    /* =========================
-     * LOGOUT
-     * ========================= */
-        $data = $query->get();
-        return view('user.status-lamaran', compact('data'));
-    }
-
     public function logout(Request $request)
     {
         Auth::logout();
