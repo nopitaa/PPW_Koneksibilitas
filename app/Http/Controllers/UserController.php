@@ -103,17 +103,12 @@ class UserController extends Controller
 
         return view('user.info-lowongan', compact('lowongan'));
     }
-
-    /* =========================
-     * STATUS LAMARAN (INI YANG KAMU TANYA)
-     * ========================= */
-    public function statuslamaran(Request $request)
+   public function statuslamaran(Request $request) 
     {
         $userId = Auth::id();
         $status = $request->query('status');
-
         $query = Lamaran::with(['lowongan.perusahaan'])
-            ->where('user_id', $userId);
+                ->where('user_id', $userId);
 
         if ($status && $status !== 'Semua') {
             $query->where('status', $status);
@@ -127,6 +122,10 @@ class UserController extends Controller
     /* =========================
      * LOGOUT
      * ========================= */
+        $data = $query->get();
+        return view('user.status-lamaran', compact('data'));
+    }
+
     public function logout(Request $request)
     {
         Auth::logout();

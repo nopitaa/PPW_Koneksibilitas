@@ -12,7 +12,7 @@ use App\Models\keterampilan;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable;
 
     protected $primaryKey = 'user_id';
 
@@ -40,6 +40,8 @@ class User extends Authenticatable
     public function lamaran()
     {
         return $this->hasMany(Lamaran::class, 'user_id', 'user_id');
+        // punya relasi dengan lowongan many to many
+        // user id ad foreign key in lamaran table
     }
 
     public function dashboard_user()

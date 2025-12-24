@@ -8,10 +8,10 @@ use App\Models\User;
 
 class Lamaran extends Model
 {
-    protected $table = 'lamaran'; 
-
     protected $primaryKey = 'lamaran_id';
 
+    protected $table = 'lamaran';
+    
     protected $fillable = [
     'user_id',
     'lowongan_id',
