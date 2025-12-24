@@ -43,18 +43,32 @@ class PerusahaanController extends Controller
             return redirect()->route('login-perusahaan');
         }
 
-        return view('perusahaan.Dashboard', [
-            'perusahaan' => Session::get('perusahaan')
+        $perusahaan = Session::get('perusahaan');
+
+        // HITUNG JUMLAH LOWONGAN
+        $jumlahLowongan = Lowongan::where(
+            'perusahaan_id',
+            $perusahaan->perusahaan_id
+        )->count();
+
+        // JUMLAH PELAMAR (jika belum ada tabel lamaran, set 0 dulu)
+        $jumlahPelamar = 0;
+
+        return view('perusahaan.dashboard', [
+            'perusahaan'      => $perusahaan,
+            'jumlahLowongan'  => $jumlahLowongan,
+            'jumlahPelamar'   => $jumlahPelamar
         ]);
     }
 
     public function logout()
     {
         Session::forget('perusahaan');
-
         Session::flush();
 
-        return redirect()->route('login-perusahaan')->with('success', 'Berhasil logout.');
+        return redirect()
+            ->route('login-perusahaan')
+            ->with('success', 'Berhasil logout.');
     }
 
     public function GetLowongan()
@@ -65,19 +79,24 @@ class PerusahaanController extends Controller
 
         $perusahaan = Session::get('perusahaan');
 
-        $lowongan = Lowongan::where('perusahaan_id', $perusahaan->perusahaan_id)->get();
+        $lowongan = Lowongan::where(
+            'perusahaan_id',
+            $perusahaan->perusahaan_id
+        )->get();
 
         return view('perusahaan.views', [
             'lowongan' => $lowongan
         ]);
     }
 
-    public function formLowongan(){
+    public function formLowongan()
+    {
         return view('perusahaan.form');
     }
 
-    public function addLowongan(Request $request){
-         if (!Session::has('perusahaan')) {
+    public function addLowongan(Request $request)
+    {
+        if (!Session::has('perusahaan')) {
             return redirect()->route('login-perusahaan');
         }
 
@@ -96,7 +115,9 @@ class PerusahaanController extends Controller
             'kategori_pekerjaan' => $request->kategori_pekerjaan
         ]);
 
-        return redirect()->route('informasi-lowongan')->with('success', 'Lowongan berhasil ditambah.');
+        return redirect()
+            ->route('informasi-lowongan')
+            ->with('success', 'Lowongan berhasil ditambah.');
     }
 
     public function editLowongan($id)
@@ -112,7 +133,8 @@ class PerusahaanController extends Controller
             ->first();
 
         if (!$lowongan) {
-            return redirect()->back()->with('error', 'Lowongan tidak ditemukan.');
+            return redirect()->back()
+                ->with('error', 'Lowongan tidak ditemukan.');
         }
 
         return view('perusahaan.edit', compact('lowongan'));
@@ -137,17 +159,43 @@ class PerusahaanController extends Controller
             ->first();
 
         if (!$lowongan) {
-            return redirect()->back()->with('error', 'Data lowongan tidak ditemukan.');
+            return redirect()->back()
+                ->with('error', 'Data lowongan tidak ditemukan.');
         }
 
         $lowongan->update([
             'posisi' => $request->posisi,
             'persyaratan' => $request->persyaratan,
-            'kategori_pekerjaan' => $request->kategori_pekerjaan,
+            'kategori_pekerjaan' => $request->kategori_pekerjaan
         ]);
 
-        return redirect()->route('informasi-lowongan')
+        return redirect()
+            ->route('informasi-lowongan')
             ->with('success', 'Lowongan berhasil diperbarui.');
+    }
+
+    public function deleteLowongan($id)
+    {
+        if (!Session::has('perusahaan')) {
+            return redirect()->route('login-perusahaan');
+        }
+
+        $perusahaan = Session::get('perusahaan');
+
+        $lowongan = Lowongan::where('lowongan_id', $id)
+            ->where('perusahaan_id', $perusahaan->perusahaan_id)
+            ->first();
+
+        if (!$lowongan) {
+            return redirect()->back()
+                ->with('error', 'Lowongan tidak ditemukan.');
+        }
+
+        $lowongan->delete();
+
+        return redirect()
+            ->route('informasi-lowongan')
+            ->with('success', 'Lowongan berhasil dihapus.');
     }
 
     public function detailLowongan($id)
@@ -167,5 +215,4 @@ class PerusahaanController extends Controller
             'lowongan' => $lowongan
         ]);
     }
-
 }

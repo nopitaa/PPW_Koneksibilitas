@@ -7,8 +7,12 @@
 @section('content')
 <div class="row mb-4">
   <div class="col-12">
-    <h4 class="fw-bold mb-1 text-white">Hai, Selamat Datang di Dashboard Perusahaan 👋</h4>
-    <p class="text-white-50">Berikut aktivitas terbaru dari perusahaan kamu.</p>
+    <h4 class="fw-bold mb-1 text-white">
+        Hai, Selamat Datang di Dashboard Perusahaan 👋
+    </h4>
+    <p class="text-white-50">
+        Berikut aktivitas terbaru dari perusahaan kamu.
+    </p>
   </div>
 </div>
 
@@ -19,7 +23,11 @@
       <div class="row align-items-center">
         <div class="col-8">
           <p class="text-sm mb-0 font-weight-bold">Jumlah Lowongan</p>
-          <h5 class="font-weight-bolder">12</h5> 
+
+          <h5 class="font-weight-bolder">
+              {{ $jumlahLowongan }}
+          </h5>
+
         </div>
         <div class="col-4 text-end">
           <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle mx-auto">
@@ -36,7 +44,11 @@
       <div class="row align-items-center">
         <div class="col-8">
           <p class="text-sm mb-0 font-weight-bold">Jumlah Pelamar</p>
-          <h5 class="font-weight-bolder">58</h5> 
+
+          <h5 class="font-weight-bolder">
+              {{ $jumlahPelamar }}
+          </h5>
+
         </div>
         <div class="col-4 text-end">
           <div class="icon icon-shape bg-gradient-success shadow-primary text-center rounded-circle mx-auto">
