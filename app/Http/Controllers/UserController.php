@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Lowongan;
+use App\Models\Lamaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
+    /* =========================
+     * REGISTER
+     * ========================= */
     public function formRegister()
     {
         return view('user.register');
@@ -19,7 +22,6 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
-       // Validasi input
         $request->validate([
             'email' => [
                 'required',
@@ -32,75 +34,105 @@ class UserController extends Controller
             'jenis_kelamin' => 'required',
             'password' => [
                 'required',
-                Password::min(8)     // Minimal 8 karakter
-                    ->letters()      // Harus ada huruf
-                    ->mixedCase()    // Harus ada Huruf Besar & Kecil
-                    ->symbols()      // Harus ada Simbol (!, @, #, dll)
-                    ->numbers()   // (Opsional) Kalau mau wajib ada angka juga
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->symbols()
+                    ->numbers()
             ],
-        ],
-        [
-            'password.min'     => 'Password minimal harus 8 karakter.',
-            'password.mixed'   => 'Password harus mengandung huruf Besar dan Kecil.',
-            'password.symbols' => 'Password harus mengandung minimal satu simbol unik (!, @, #, $, dll).',
-            'password.letters' => 'Password harus mengandung huruf.',
+        ], [
             'email.unique'     => 'Email sudah terdaftar.',
-            'email.email'      => 'Format email tidak valid.'
+            'email.email'      => 'Format email tidak valid.',
+            'password.min'     => 'Password minimal 8 karakter.',
+            'password.mixed'   => 'Password harus mengandung huruf besar dan kecil.',
+            'password.symbols' => 'Password harus mengandung simbol.',
+            'password.letters' => 'Password harus mengandung huruf.',
         ]);
-        // Buat user baru
+
         User::create([
-            'email' => $request->email,
-            'nama_depan' => $request->nama_depan,
+            'email'         => $request->email,
+            'nama_depan'    => $request->nama_depan,
             'nama_belakang' => $request->nama_belakang,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'password' => Hash::make($request->password),
-
+            'password'      => Hash::make($request->password),
         ]);
-        return redirect()->route('login')->with('success', 'Silakan login.');
+
+        return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login.');
     }
 
+    /* =========================
+     * LOGIN
+     * ========================= */
     public function formLogin()
     {
         return view('user.login');
     }
+
     public function login(Request $request)
     {
-        // Validasi input
         $credentials = $request->validate([
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required'
         ]);
 
         if (Auth::attempt($credentials)) {
-            // regenerasi session ID
             $request->session()->regenerate();
-            // selalu redirect ke beranda setelah login, jangan ke intended (lamar dsb)
-            return redirect()->route('home')->with('success','Selamat Datang di Koneksibilitas!');
+            return redirect()->route('home')->with('success', 'Selamat datang di Koneksibilitas!');
         }
-        return back()->with('error', 'Email atau password yang Anda masukkan salah.');
+
+        return back()->with('error', 'Email atau password salah.');
     }
 
-    public function Beranda()
+    /* =========================
+     * BERANDA LOWONGAN
+     * ========================= */
+    public function beranda()
     {
-         $data = Lowongan::with('perusahaan')->get();
-
+        $data = Lowongan::with('perusahaan')->get();
         return view('user.beranda', compact('data'));
     }
 
+    /* =========================
+     * DETAIL LOWONGAN
+     * ========================= */
     public function show($id)
     {
-        $lowongan = lowongan::with('perusahaan')
+        $lowongan = Lowongan::with('perusahaan')
             ->where('lowongan_id', $id)
             ->firstOrFail();
 
         return view('user.info-lowongan', compact('lowongan'));
     }
 
+    /* =========================
+     * STATUS LAMARAN (INI YANG KAMU TANYA)
+     * ========================= */
+    public function statuslamaran(Request $request)
+    {
+        $userId = Auth::id();
+        $status = $request->query('status');
+
+        $query = Lamaran::with(['lowongan.perusahaan'])
+            ->where('user_id', $userId);
+
+        if ($status && $status !== 'Semua') {
+            $query->where('status', $status);
+        }
+
+        $data = $query->get();
+
+        return view('user.status-lamaran', compact('data'));
+    }
+
+    /* =========================
+     * LOGOUT
+     * ========================= */
     public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect()->route('login')->with('success', 'Anda berhasil logout.');
     }
 }

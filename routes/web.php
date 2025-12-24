@@ -26,6 +26,10 @@ Route::get('/user/lowongan-tersimpan',[LowonganController::class, 'simpan'])->na
 Route::post('/lowongan/{id}/simpan',[LowonganController::class, 'toggleSimpanSession'])->name('lowongan.simpan');
 Route::get('/simpan',[LowonganController::class, 'tersimpanSession'])->name('lowongan_tersimpan');
 
+Route::get('/status-lamaran', [UserController::class, 'statuslamaran'])
+    ->middleware('auth')
+    ->name('status.lamaran');
+
 
 // Lamar routes require authenticated users
 Route::middleware('auth')->group(function () {

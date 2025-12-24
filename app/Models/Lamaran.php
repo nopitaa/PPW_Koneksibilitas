@@ -8,28 +8,29 @@ use App\Models\User;
 
 class Lamaran extends Model
 {
-    protected $table = 'lamaran'; // ⬅️ WAJIB
+    protected $table = 'lamaran'; 
 
     protected $primaryKey = 'lamaran_id';
 
     protected $fillable = [
-        'user_id',
-        'lowongan_id',
-        'nama_lengkap',
-        'jenis_kelamin',
-        'nomor_hp',
-        'alamat_lengkap',
-        'email',
-        'pendidikan',
-        'nama_institusi',
-        'jurusan',
-        'th_start',
-        'th_end',
-        'alat_bantu',
-        'cv',
-        'resume',
-        'portofolio',
-    ];
+    'user_id',
+    'lowongan_id',
+    'nama_lengkap',
+    'jenis_kelamin',
+    'nomor_hp',
+    'alamat_lengkap',
+    'email',
+    'pendidikan',
+    'nama_institusi',
+    'jurusan',
+    'th_start',
+    'th_end',
+    'alat_bantu',
+    'cv',
+    'resume',
+    'portofolio',
+    'status', 
+];
 
     public function lowongan()
     {
