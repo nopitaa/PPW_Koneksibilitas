@@ -117,6 +117,9 @@ Route::get('/tambah-lowongan', [PerusahaanController::class,'formLowongan'])->na
 Route::post('/tambah-lowongan', [PerusahaanController::class,'addLowongan'])->name('tambah-lowongan.process');
 Route::get('/informasi-lowongan/{id}',[PerusahaanController::class, 'detailLowongan'])->name('detail-lowongan');
 Route::delete('/informasi-lowongan/delete/{id}',[PerusahaanController::class, 'deleteLowongan'])->name('delete-lowongan');
+Route::get('/register-perusahaan', [PerusahaanController::class, 'showRegister'])->name('register-perusahaan');
+Route::post('/register-perusahaan', [PerusahaanController::class, 'register'])->name('register-perusahaan.process');
+
 
 
 //admin
