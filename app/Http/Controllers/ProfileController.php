@@ -9,20 +9,28 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
+    /**
+     * Ambil profile milik user login.
+     * Jika belum ada, buat 1 profile baru untuk user tersebut.
+     */
     protected function getProfile(): Profile
     {
-        return Profile::firstOrCreate([], [
-            'name' => null,
-            'subtitle' => null,
-            'about' => null,
-            'skills' => null,
-        ]);
+        $user = auth()->user();
+
+        return Profile::firstOrCreate(
+            ['user_id' => $user->user_id],
+            [
+                'name'     => null,
+                'subtitle' => null,
+                'about'    => null,
+                'skills'   => null,
+            ]
+        );
     }
 
     public function show()
     {
         $profile = $this->getProfile();
-
         return view('user.profile-show', compact('profile'));
     }
 
@@ -30,8 +38,29 @@ class ProfileController extends Controller
     {
         $profile = $this->getProfile();
 
-        // ambil daftar keterampilan yang tersedia
         $allSkills = keterampilan::orderBy('nama_keterampilan')->get();
+
+        if ($allSkills->isEmpty()) {
+            $defaults = [
+                'Design Grafis',
+                'Mobile Developer',
+                'Web Development',
+                'UI/UX Designer',
+                'Data Analyst',
+                'SEO',
+                'Copywriting',
+                'Social Media Management',
+                'Project Management',
+                'DevOps',
+            ];
+
+            $allSkills = collect($defaults)->map(function ($name, $i) {
+                return (object) [
+                    'keterampilan_id'   => 'dflt-' . ($i + 1),
+                    'nama_keterampilan' => $name,
+                ];
+            });
+        }
 
         return view('user.profile-edit', compact('profile', 'allSkills'));
     }
@@ -43,66 +72,57 @@ class ProfileController extends Controller
         $data = $request->validate([
             'name'      => ['nullable', 'string', 'max:100'],
             'about'     => ['nullable', 'string', 'max:1000'],
-            'skills'    => ['nullable', 'array'], // menerima array pilihan
+            'skills'    => ['nullable', 'array'],
             'skills.*'  => ['string'],
-            'avatar'    => ['nullable', 'image', 'max:2048'], // 2MB
+            'avatar'    => ['nullable', 'image', 'max:2048'],
             'cv'        => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
             'resume'    => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
             'portfolio' => ['nullable', 'file', 'mimes:pdf,doc,docx,zip', 'max:5120'],
         ]);
 
-        // parsing skills: data bisa berupa array (dari checkbox) atau string (fallback)
-        $skillsArray = null;
-        if (!empty($data['skills'])) {
-            if (is_array($data['skills'])) {
-                $skillsArray = collect($data['skills'])
-                    ->map(fn ($s) => trim($s))
-                    ->filter()
-                    ->values()
-                    ->all();
-            } else {
-                $skillsArray = collect(explode(',', $data['skills']))
-                    ->map(fn ($s) => trim($s))
-                    ->filter()
-                    ->values()
-                    ->all();
-            }
-        }
+        // Parsing skills
+        $skillsArray = isset($data['skills'])
+            ? collect($data['skills'])->map(fn ($s) => trim($s))->filter()->values()->all()
+            : null;
 
-        // handle upload files (pakai disk public)
+        /**
+         * ===== FILE UPLOAD (AMAN, TIDAK ADA delete(null)) =====
+         */
+
         if ($request->hasFile('avatar')) {
-            if ($profile->avatar_path) {
+            if ($profile->avatar_path && Storage::disk('public')->exists($profile->avatar_path)) {
                 Storage::disk('public')->delete($profile->avatar_path);
             }
             $data['avatar_path'] = $request->file('avatar')->store('profiles', 'public');
         }
 
         if ($request->hasFile('cv')) {
-            if ($profile->cv_path) {
+            if ($profile->cv_path && Storage::disk('public')->exists($profile->cv_path)) {
                 Storage::disk('public')->delete($profile->cv_path);
             }
             $data['cv_path'] = $request->file('cv')->store('profiles', 'public');
         }
 
         if ($request->hasFile('resume')) {
-            if ($profile->resume_path) {
+            if ($profile->resume_path && Storage::disk('public')->exists($profile->resume_path)) {
                 Storage::disk('public')->delete($profile->resume_path);
             }
             $data['resume_path'] = $request->file('resume')->store('profiles', 'public');
         }
 
         if ($request->hasFile('portfolio')) {
-            if ($profile->portfolio_path) {
+            if ($profile->portfolio_path && Storage::disk('public')->exists($profile->portfolio_path)) {
                 Storage::disk('public')->delete($profile->portfolio_path);
             }
             $data['portfolio_path'] = $request->file('portfolio')->store('profiles', 'public');
         }
 
-        // simpan
+        /**
+         * Simpan ke database
+         */
         $profile->update([
             'name'           => $data['name'] ?? $profile->name,
-            'subtitle'       => $profile->subtitle,  // kita biarkan kosong
-            'about'          => $data['about'] ?? null,
+            'about'          => $data['about'] ?? $profile->about,
             'skills'         => $skillsArray,
             'avatar_path'    => $data['avatar_path'] ?? $profile->avatar_path,
             'cv_path'        => $data['cv_path'] ?? $profile->cv_path,
@@ -115,34 +135,27 @@ class ProfileController extends Controller
             ->with('success', 'Profil berhasil diperbarui.');
     }
 
-    // 🔍 PREVIEW FILE DI TAB BARU
     public function view(string $type)
     {
         $profile = $this->getProfile();
 
-        // hanya boleh: cv, resume, portfolio
-        if (! in_array($type, ['cv', 'resume', 'portfolio'])) {
+        if (!in_array($type, ['cv', 'resume', 'portfolio'])) {
             abort(404);
         }
 
-        $field = $type . '_path';   // cv_path / resume_path / portfolio_path
+        $field = $type . '_path';
 
-        if (! $profile->$field) {
+        if (!$profile->$field || !Storage::disk('public')->exists($profile->$field)) {
             abort(404);
         }
 
-        $path = $profile->$field;
-
-        if (! Storage::disk('public')->exists($path)) {
-            abort(404, 'File tidak ditemukan.');
-        }
-
-        $file = Storage::disk('public')->get($path);
-        $mime = Storage::disk('public')->mimeType($path) ?? 'application/octet-stream';
-
-        // inline = buka di tab baru, bukan download
-        return response($file, 200)
-            ->header('Content-Type', $mime)
-            ->header('Content-Disposition', 'inline; filename="'.basename($path).'"');
+        return response(
+            Storage::disk('public')->get($profile->$field),
+            200,
+            [
+                'Content-Type' => Storage::disk('public')->mimeType($profile->$field),
+                'Content-Disposition' => 'inline; filename="' . basename($profile->$field) . '"',
+            ]
+        );
     }
 }

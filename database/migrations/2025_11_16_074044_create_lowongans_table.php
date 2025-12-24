@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id('lowongan_id');
             $table->foreignId('perusahaan_id')->constrained('perusahaan', 'perusahaan_id'); 
             $table->string('posisi');
-            $table->string('persyaratan');
+            $table->text('persyaratan');
             $table->string('kategori_pekerjaan');
             $table->timestamps();
         });

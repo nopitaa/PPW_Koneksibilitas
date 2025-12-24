@@ -3,79 +3,152 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Profile;
+use App\Models\Lamaran;
 
 class LamarController extends Controller
 {
-    public function submit(Request $request)
+    /**
+     * ======================
+     * STEP 1 → SIMPAN SESSION
+     * ======================
+     */
+    public function storeStep1(Request $request, $lowongan)
     {
-        // ambil profil terlebih dahulu untuk menentukan aturan validasi
-        $profile = Profile::first();
+        $data = $request->validate([
+            'nama'   => 'required|string',
+            'gender' => 'required|string',
+            'no_hp'  => 'required|string',
+            'alamat' => 'required|string',
+            'email'  => 'required|email',
+        ]);
 
+        session(['lamaran.step1' => $data]);
+
+        return redirect()->route('lamar.step2', ['lowongan' => $lowongan]);
+    }
+
+    /**
+     * ======================
+     * STEP 2 → SIMPAN SESSION
+     * ======================
+     */
+    public function storeStep2(Request $request, $lowongan)
+    {
+        $data = $request->validate([
+            'pendidikan_terakhir' => 'required|string',
+            'institusi'           => 'required|string',
+            'jurusan'             => 'required|string',
+            'tahun_mulai'         => 'required|integer',
+            'tahun_berakhir'      => 'required|integer',
+        ]);
+
+        session(['lamaran.step2' => $data]);
+
+        return redirect()->route('lamar.step3', ['lowongan' => $lowongan]);
+    }
+
+    /**
+     * ======================
+     * STEP 3 → SIMPAN DATABASE
+     * ======================
+     */
+    public function submit(Request $request, $lowongan)
+    {
+        $user    = Auth::user();
+        $profile = Profile::where('user_id', $user->user_id)->first();
+
+        $step1 = session('lamaran.step1');
+        $step2 = session('lamaran.step2');
+
+        if (!$step1 || !$step2) {
+            return redirect()
+                ->route('lamar.step1', ['lowongan' => $lowongan])
+                ->with('error', 'Data lamaran belum lengkap.');
+        }
+
+        /**
+         * ======================
+         * VALIDASI DINAMIS
+         * ======================
+         */
         $cvRule = 'nullable|file|mimes:pdf,doc,docx|max:2048';
-        // jika profil tidak punya CV tersimpan, jadikan CV wajib di-upload pada step ini
-        if (! $profile || empty($profile->cv_path)) {
+        if (!$profile || !$profile->cv_path) {
             $cvRule = 'required|' . $cvRule;
         }
 
-        $rules = [
-            // view uses combined value 'tuna_rungu_wicara'
-            'jenis_disabilitas' => 'required|in:tuna_rungu_wicara,lainnya',
-            'alat_bantu'        => 'nullable|string|max:200',
-            // validate file type/size but we'll enforce presence (upload or profile) below
-            'cv'                => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-            'portofolio'        => 'nullable|file|mimes:pdf,doc,docx,zip|max:5120',
-            'dokumen_tambahan.*'=> 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png,zip|max:5120',
-        ];
+        $request->validate([
+            'jenis_disabilitas'     => 'required|string',
+            'alat_bantu'            => 'nullable|string',
+            'cv'                    => $cvRule,
+            'portofolio'            => 'nullable|file|mimes:pdf,doc,docx,zip|max:5120',
+            'dokumen_tambahan'      => 'required|array|min:1',
+            'dokumen_tambahan.*'    => 'file|mimes:pdf,doc,docx|max:5120',
+        ]);
 
-        $validated = $request->validate($rules);
-
-        // Pastikan ada CV — baik di-upload sekarang atau sudah ada di Profile
-        $hasCvUpload = $request->hasFile('cv');
-        if (! $hasCvUpload && (! $profile || empty($profile->cv_path))) {
-            return redirect()->back()
-                ->withErrors(['cv' => 'CV harus disediakan: unggah CV di sini atau tambahkan CV pada profil Anda.'])
-                ->withInput();
+        /**
+         * ======================
+         * TENTUKAN CV (WAJIB ADA)
+         * ======================
+         */
+        if ($request->hasFile('cv')) {
+            $cvPath = $request->file('cv')->store('lamaran/cv', 'public');
+        } else {
+            $cvPath = $profile->cv_path;
         }
 
-        // Simpan file (contoh penyimpanan ke storage/app/lamaran)
-        // Jika pengguna tidak mengupload CV/portofolio di form, gunakan file dari Profile jika tersedia
-        foreach (['cv','portofolio'] as $f) {
-            if ($request->hasFile($f)) {
-                // files uploaded in this form are stored on the default disk (storage/app)
-                // prefix with `local:` so downstream code knows where to read them
-                $path = $request->file($f)->store('lamaran');
-                $validated[$f] = 'local:' . $path;
-            }
-        }
+        /**
+         * ======================
+         * PORTOFOLIO (OPSIONAL)
+         * ======================
+         */
+        $portoPath = $request->hasFile('portofolio')
+            ? $request->file('portofolio')->store('lamaran/portofolio', 'public')
+            : null;
 
-        // fallback: ambil dari profile jika ada (salin ke folder lamaran agar aplikasi punya salinan)
-        if ($profile) {
-            // mapping form name -> profile field
-            $map = ['cv' => 'cv_path', 'portofolio' => 'portfolio_path'];
-            foreach ($map as $formName => $profileField) {
-                if (empty($validated[$formName]) && !empty($profile->$profileField)) {
-                    $srcPath = $profile->$profileField; // path on 'public' disk
-                    if (Storage::disk('public')->exists($srcPath)) {
-                        // Instead of copying the file, store a reference to the profile file path
-                        // and prefix with `public:` so downstream code can read from the public disk.
-                        $validated[$formName] = 'public:' . $srcPath;
-                    }
-                }
-            }
-        }
+        /**
+         * ======================
+         * RESUME ← DOKUMEN TAMBAHAN (FILE PERTAMA)
+         * ======================
+         */
+        $resumePath = $request->file('dokumen_tambahan')[0]
+            ->store('lamaran/resume', 'public');
 
-        if ($request->hasFile('dokumen_tambahan')) {
-            $paths = [];
-            foreach ($request->file('dokumen_tambahan') as $file) {
-                $paths[] = $file->store('lamaran');
-            }
-            $validated['dokumen_tambahan'] = $paths;
-        }
+        /**
+         * ======================
+         * SIMPAN KE DATABASE
+         * ======================
+         */
+        Lamaran::create([
+            'user_id'        => $user->user_id,
+            'lowongan_id'    => $lowongan,
+
+            // STEP 1
+            'nama_lengkap'   => $step1['nama'],
+            'jenis_kelamin'  => $step1['gender'],
+            'nomor_hp'       => $step1['no_hp'],
+            'alamat_lengkap' => $step1['alamat'],
+            'email'          => $step1['email'],
+
+            // STEP 2
+            'pendidikan'     => $step2['pendidikan_terakhir'],
+            'nama_institusi' => $step2['institusi'],
+            'jurusan'        => $step2['jurusan'],
+            'th_start'       => $step2['tahun_mulai'],
+            'th_end'         => $step2['tahun_berakhir'],
+
+            // STEP 3
+            'alat_bantu'     => $request->alat_bantu ?? 'Tidak ada',
+            'cv'             => $cvPath,
+            'portofolio'     => $portoPath,
+            'resume'         => $resumePath,
+        ]);
+
+        session()->forget('lamaran');
 
         return redirect()
-            ->route('home')
-            ->with('success', 'Lamaran berhasil dikirim. Terima kasih telah melamar!');
+    ->route('home')
+    ->with('lamaran_success', 'Lamaran berhasil dikirim.');
     }
 }

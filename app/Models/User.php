@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use App\Models\Lamaran;
 use App\Models\dashboard_user;
 use App\Models\keterampilan;
@@ -13,12 +13,6 @@ use App\Models\keterampilan;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
 
     protected $primaryKey = 'user_id';
 
@@ -30,11 +24,6 @@ class User extends Authenticatable
         'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -54,13 +43,14 @@ class User extends Authenticatable
         // punya relasi dengan lowongan many to many
         // user id ad foreign key in lamaran table
     }
+
     public function dashboard_user()
     {
         return $this->hasOne(dashboard_user::class);
-        // punya relasi dengan lowongan many to many
     }
 
-    public function keterampilan(){
+    public function keterampilan()
+    {
         return $this->belongsToMany(keterampilan::class);
     }
 }
