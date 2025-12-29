@@ -15,7 +15,7 @@ class lowongan extends Model
         'posisi',
         'persyaratan',
         'kategori_pekerjaan',
-        'approved_at', // 🔥 PENTING
+        'status', // 🔥 PENTING
     ];
 
     // ============================

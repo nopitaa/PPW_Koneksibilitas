@@ -49,9 +49,8 @@ class CompanyController extends Controller
     public function dashboard(Request $request)
     {
         $query = Lowongan::with('perusahaan')
-            ->whereNull('approved_at'); // hanya pengajuan
+            ->where('status', 'menunggu'); // ✅ FIX
 
-        // 🔍 SEARCH
         if ($request->filled('keyword')) {
             $keyword = $request->keyword;
 
@@ -77,13 +76,13 @@ class CompanyController extends Controller
 
     // ============================
     // ADMIN - PERUSAHAAN
-    // (LOWONGAN YANG DISETUJUI)
+    // (LOWONGAN DISETUJUI)
     // ============================
 
     public function index()
     {
         $companies = Lowongan::with('perusahaan')
-            ->whereNotNull('approved_at')
+            ->where('status', 'disetujui') // ✅ FIX
             ->get()
             ->map(function ($lowongan) {
                 return (object)[
@@ -108,36 +107,10 @@ class CompanyController extends Controller
             return redirect()->route('company.login');
         }
 
-        $lowongans = Lowongan::where('perusahaan_id', $companyId)
-            ->whereNotNull('approved_at')
+        $companies = Lowongan::where('perusahaan_id', $companyId)
+            ->where('status', 'disetujui') // ✅ FIX
             ->get();
 
-        return view('company.dashboard', compact('lowongans'));
-    }
-
-    // ============================
-    // APPROVE & REJECT (ADMIN)
-    // ============================
-
-    public function approve($id)
-    {
-        $lowongan = Lowongan::findOrFail($id);
-        $lowongan->approved_at = now();
-        $lowongan->save();
-
-        return back()->with('success', 'Lowongan berhasil disetujui');
-    }
-
-    public function reject($id)
-    {
-        $lowongan = Lowongan::findOrFail($id);
-
-        if ($lowongan->lamaran()->exists()) {
-            return back()->with('error', 'Lowongan sudah memiliki lamaran');
-        }
-
-        $lowongan->delete();
-
-        return back()->with('success', 'Lowongan berhasil ditolak');
+        return view('company.dashboard', compact('companies'));
     }
 }

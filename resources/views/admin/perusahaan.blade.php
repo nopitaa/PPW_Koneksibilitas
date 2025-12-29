@@ -2,10 +2,9 @@
 
 @section('content')
 <div class="container">
-    <h4 class="fw-bold mb-4" style="color: #007bff;">Daftar Pengajuan Lowongan</h4>
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+    <h4 class="fw-bold mb-4" style="color: #007bff;">
+        Daftar Lowongan Disetujui
+    </h4>
 
     <table class="table table-bordered mt-3">
         <thead>
@@ -16,15 +15,17 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($companies as $company)
+            @forelse($lowongans as $company)
                 <tr style="font-size: 14px;">
-                    <td>{{ $company->company_id }}</td>
-                    <td>{{ $company->name }}</td>
-                    <td>{{ $company->position }}</td>
+                    <td>{{ $company->perusahaan->perusahaan_id }}</td>
+                    <td>{{ $company->perusahaan->nama_perusahaan }}</td>
+                    <td>{{ $company->posisi }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="3" class="text-center">Belum ada perusahaan disetujui.</td>
+                    <td colspan="3" class="text-center">
+                        Belum ada lowongan yang disetujui
+                    </td>
                 </tr>
             @endforelse
         </tbody>
