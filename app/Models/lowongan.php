@@ -15,7 +15,7 @@ class lowongan extends Model
         'posisi',
         'persyaratan',
         'kategori_pekerjaan',
-        'approved_at', // 🔥 PENTING
+        'approved_at', 
     ];
 
     // ============================
@@ -39,4 +39,9 @@ class lowongan extends Model
             'lowongan_id'
         );
     }
+
+    protected $casts = [
+        'created_at'  => 'datetime',
+        'approved_at' => 'datetime',
+    ];
 }

@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
         return view('user.lamar-step1', compact('lowongan'));
     })->name('lamar.step1');
 
-    Route::post('/lamar-pekerjaan/{lowongan}/step1', 
+    Route::post('/lamar-pekerjaan/{lowongan}/step1',
         [LamarController::class, 'storeStep1']
     )->name('lamar.step1.store');
 
@@ -118,12 +118,11 @@ Route::post('/tambah-lowongan', [PerusahaanController::class,'addLowongan'])->na
 Route::get('/informasi-lowongan/{id}',[PerusahaanController::class, 'detailLowongan'])->name('detail-lowongan');
 
 //admin
-Route::get('/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');
+//Route::get('/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');
 Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-Route::get('/admin/perusahaan', [CompanyController::class, 'index'])->name('perusahaan'); 
+Route::get('/admin/perusahaan', [CompanyController::class, 'index'])->name('perusahaan');
 Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.submit');
 Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 Route::post('/admin/lowongan/{id}/approve', [AdminController::class, 'approve'])->name('lowongan.approve');
 Route::post('/admin/lowongan/{id}/reject', [AdminController::class, 'reject'])->name('lowongan.reject');
-
