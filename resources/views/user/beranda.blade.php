@@ -151,4 +151,4 @@
         @endif
     </script>
 
-@endsectionE
+@endsection
