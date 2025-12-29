@@ -57,29 +57,42 @@ class AdminController extends Controller
         return view('admin.dashboard', compact('lowongans'));
     }
 
+    // ✅ APPROVE (pakai status varchar)
     public function approve($id)
     {
         Lowongan::where('lowongan_id', $id)->update([
-            'approved_at' => now()
+            'status' => 'disetujui'
         ]);
 
         return back()->with('success', 'Lowongan berhasil disetujui');
     }
 
+    // ✅ REJECT (pakai status varchar)
     public function reject($id)
     {
-        // Tidak ubah apapun, hanya notif
+        Lowongan::where('lowongan_id', $id)->update([
+            'status' => 'ditolak'
+        ]);
+
         return back()->with('success', 'Lowongan ditolak');
     }
 
-
-
-
-
-   public function logout()
+    public function logout()
     {
         session()->forget(['admin_logged_in', 'admin_id', 'admin_email']);
         return redirect()->route('admin.login');
+    }
+    public function perusahaan()
+    {
+        if (!session('admin_logged_in')) {
+            return redirect()->route('admin.login');
+        }
+
+        $lowongans = Lowongan::with('perusahaan')
+            ->where('status', 'disetujui')
+            ->get();
+
+        return view('admin.perusahaan', compact('lowongans'));
     }
 
 }
