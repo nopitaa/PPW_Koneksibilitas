@@ -160,11 +160,32 @@
 
 </div>
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <script>
-    const saveIcon = document.getElementById('saveIcon');
-    saveIcon.addEventListener('click', () => {
-        saveIcon.classList.toggle('bi-bookmark');
-        saveIcon.classList.toggle('bi-bookmark-fill');
+const saveIcon = document.getElementById('saveIcon');
+
+saveIcon.addEventListener('click', () => {
+    fetch("{{ route('lowongan.simpan', $lowongan->lowongan_id) }}", {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute('content'),
+            "Accept": "application/json"
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.saved) {
+            saveIcon.classList.remove('bi-bookmark');
+            saveIcon.classList.add('bi-bookmark-fill');
+        } else {
+            saveIcon.classList.remove('bi-bookmark-fill');
+            saveIcon.classList.add('bi-bookmark');
+        }
     });
+});
 </script>
+
 @endsection
