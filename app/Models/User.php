@@ -12,7 +12,7 @@ use App\Models\keterampilan;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     protected $primaryKey = 'user_id';
 
