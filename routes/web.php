@@ -22,10 +22,15 @@ Route::get('/register',[UserController::class,'formRegister'])->name('register')
 Route::post('/register',[UserController::class,'register'])->name('register.process');
 Route::get('/beranda',[UserController::class,'beranda'])->name('home');
 Route::get('/lowongan/{id}', [UserController::class, 'show'])->name('lowongan.detail');
-Route::get('/user/lowongan-tersimpan',[LowonganController::class, 'simpan'])->name('lowongan_tersimpan');
 Route::post('/lowongan/{id}/simpan',[LowonganController::class, 'toggleSimpanSession'])->name('lowongan.simpan');
-Route::get('/simpan',[LowonganController::class, 'tersimpanSession'])->name('lowongan_tersimpan');
 Route::get('/status-lamaran', [UserController::class, 'statuslamaran'])->name('status.lamaran');
+Route::get('/simpan', [LowonganController::class, 'tersimpanSession'])
+    ->name('lowongan_tersimpan');
+
+Route::post('/lowongan/{id}/simpan',
+    [LowonganController::class, 'toggleSimpanSession']
+)->name('lowongan.simpan');
+
 
 Route::get('/status-lamaran', [UserController::class, 'statuslamaran'])
     ->middleware('auth')
