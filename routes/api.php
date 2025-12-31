@@ -19,7 +19,7 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // Public Lowongan (hanya yang approved)
 Route::get('/lowongan', [LowonganController::class, 'index']);
-Route::get('/lowongan/{id}', [LowonganController::class, 'show']);
+Route::get('/lowongan/{lowongan_id}', [LowonganController::class, 'show']);
 
 // Public Keterampilan List
 Route::get('/keterampilan', [KeterampilanController::class, 'index']);
@@ -31,7 +31,7 @@ Route::get('/keterampilan', [KeterampilanController::class, 'index']);
 */
 
 Route::middleware('auth:sanctum')->group(function () {
-    
+
     // Authentication
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);

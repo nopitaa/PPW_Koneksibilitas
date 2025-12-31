@@ -14,6 +14,7 @@ class Lowongan extends Model
         'posisi',
         'persyaratan',
         'kategori_pekerjaan',
+        'status', 
     ];
 
     public function perusahaan()
@@ -25,4 +26,9 @@ class Lowongan extends Model
     {
         return $this->hasMany(Lamaran::class, 'lowongan_id', 'lowongan_id');
     }
+
+    protected $casts = [
+        'created_at'  => 'datetime',
+        'approved_at' => 'datetime',
+    ];
 }

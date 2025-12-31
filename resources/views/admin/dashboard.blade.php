@@ -18,10 +18,11 @@
     <form method="GET" action="{{ route('dashboard') }}" class="mb-3">
         <div class="row g-2">
             <div class="col-md-4">
-                <input type="text" name="keyword"
-                    class="form-control form-control-sm"
-                    placeholder="Cari nama perusahaan / posisi"
-                    value="{{ request('keyword') }}">
+                <input type="text"
+                       name="keyword"
+                       class="form-control form-control-sm"
+                       placeholder="Cari"
+                       value="{{ request('keyword') }}">
             </div>
             <div class="col-md-2">
                 <button class="btn btn-primary btn-sm w-100">Cari</button>
@@ -40,42 +41,40 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($lowongans as $lowongan)
-                <tr>
-                    <td>{{ $lowongan->lowongan_id }}</td>
-                    <td>{{ $lowongan->perusahaan->nama_perusahaan ?? '-' }}</td>
-                    <td>{{ $lowongan->posisi }}</td>
-                    <td>
-                        @if($lowongan->approved_at)
-                            <span class="badge bg-success">
-                                Disetujui
-                            </span>
-                        @else
-                            <form action="{{ route('lowongan.approve', $lowongan->lowongan_id) }}"
-                                method="POST" class="d-inline">
-                                @csrf
-                                <button class="btn btn-success btn-sm">
-                                    Setujui
-                                </button>
-                            </form>
+        @forelse($lowongans as $lowongan)
+            <tr>
+                <td>{{ $lowongan->lowongan_id }}</td>
+                <td>{{ $lowongan->perusahaan->nama_perusahaan ?? '-' }}</td>
+                <td>{{ $lowongan->posisi }}</td>
+                <td>
+                    @if($lowongan->status === 'disetujui')
+                        <span class="badge bg-success">Disetujui</span>
 
-                            <form action="{{ route('lowongan.reject', $lowongan->lowongan_id) }}"
-                                method="POST" class="d-inline">
-                                @csrf
-                                <button class="btn btn-danger btn-sm">
-                                    Tolak
-                                </button>
-                            </form>
-                        @endif
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="4" class="text-center">
-                        Tidak ada pengajuan lowongan
-                    </td>
-                </tr>
-            @endforelse
+                    @elseif($lowongan->status === 'ditolak')
+                        <span class="badge bg-danger">Ditolak</span>
+
+                    @else
+                        <form action="{{ route('lowongan.approve', $lowongan->lowongan_id) }}"
+                              method="POST" class="d-inline">
+                            @csrf
+                            <button class="btn btn-success btn-sm">Setujui</button>
+                        </form>
+
+                        <form action="{{ route('lowongan.reject', $lowongan->lowongan_id) }}"
+                              method="POST" class="d-inline">
+                            @csrf
+                            <button class="btn btn-danger btn-sm">Tolak</button>
+                        </form>
+                    @endif
+                </td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="4" class="text-center">
+                    Tidak ada pengajuan lowongan
+                </td>
+            </tr>
+        @endforelse
         </tbody>
     </table>
 </div>
