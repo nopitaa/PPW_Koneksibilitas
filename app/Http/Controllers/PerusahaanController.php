@@ -15,6 +15,34 @@ class PerusahaanController extends Controller
         return view('perusahaan.login');
     }
 
+    public function showRegister()
+    {
+        return view('perusahaan.register');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'nama_perusahaan' => 'required|string|max:255',
+            'alamat'          => 'required|string',
+            'email'           => 'required|email|unique:perusahaan,email',
+            'nomor_npwp'      => 'required|string',
+            'password'        => 'required|min:6|confirmed',
+        ]);
+
+        $perusahaan = Perusahaan::create([
+            'nama_perusahaan' => $request->nama_perusahaan,
+            'alamat'          => $request->alamat,
+            'email'           => $request->email,
+            'nomor_npwp'      => $request->nomor_npwp,
+            'password'        => Hash::make($request->password),
+        ]);
+
+        Session::put('perusahaan', $perusahaan);
+
+        return redirect()->route('perusahaan-dashboard');
+    }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -24,17 +52,18 @@ class PerusahaanController extends Controller
 
         $perusahaan = Perusahaan::where('email', $request->email)->first();
 
-        if (!$perusahaan) {
-            return back()->with('error', 'Email tidak ditemukan.');
-        }
-
-        if (!Hash::check($request->password, $perusahaan->password)) {
-            return back()->with('error', 'Password salah.');
+        if (!$perusahaan || !Hash::check($request->password, $perusahaan->password)) {
+            return back()->with('error', 'Email atau password salah.');
         }
 
         Session::put('perusahaan', $perusahaan);
-
         return redirect()->route('perusahaan-dashboard');
+    }
+
+    public function logout()
+    {
+        Session::flush();
+        return redirect()->route('login-perusahaan');
     }
 
     public function dashboard()
@@ -43,129 +72,66 @@ class PerusahaanController extends Controller
             return redirect()->route('login-perusahaan');
         }
 
-        return view('perusahaan.Dashboard', [
-            'perusahaan' => Session::get('perusahaan')
-        ]);
-    }
+        $perusahaan = Session::get('perusahaan');
 
-    public function logout()
-    {
-        Session::forget('perusahaan');
+        $jumlahLowongan = Lowongan::where('perusahaan_id', $perusahaan->perusahaan_id)->count();
 
-        Session::flush();
+        $jumlahPelamar = Lowongan::where('perusahaan_id', $perusahaan->perusahaan_id)
+            ->withCount('lamaran')
+            ->get()
+            ->sum('lamaran_count');
 
-        return redirect()->route('login-perusahaan')->with('success', 'Berhasil logout.');
+        return view('perusahaan.dashboard', compact(
+            'perusahaan',
+            'jumlahLowongan',
+            'jumlahPelamar'
+        ));
     }
 
     public function GetLowongan()
     {
-        if (!Session::has('perusahaan')) {
-            return redirect()->route('login-perusahaan');
-        }
-
         $perusahaan = Session::get('perusahaan');
 
         $lowongan = Lowongan::where('perusahaan_id', $perusahaan->perusahaan_id)->get();
-
-        return view('perusahaan.views', [
-            'lowongan' => $lowongan
-        ]);
+        return view('perusahaan.views', compact('lowongan'));
     }
 
-    public function formLowongan(){
+    public function formLowongan()
+    {
         return view('perusahaan.form');
     }
 
-    public function addLowongan(Request $request){
-         if (!Session::has('perusahaan')) {
-            return redirect()->route('login-perusahaan');
-        }
-
+    public function addLowongan(Request $request)
+    {
         $request->validate([
-            'posisi' => 'required',
-            'persyaratan' => 'required',
+            'posisi'             => 'required',
+            'persyaratan'        => 'required',
             'kategori_pekerjaan' => 'required'
         ]);
 
         $perusahaan = Session::get('perusahaan');
 
         Lowongan::create([
-            'perusahaan_id' => $perusahaan->perusahaan_id,
-            'posisi' => $request->posisi,
-            'persyaratan' => $request->persyaratan,
+            'perusahaan_id'      => $perusahaan->perusahaan_id,
+            'posisi'             => $request->posisi,
+            'persyaratan'        => $request->persyaratan,
             'kategori_pekerjaan' => $request->kategori_pekerjaan
         ]);
 
-        return redirect()->route('informasi-lowongan')->with('success', 'Lowongan berhasil ditambah.');
+        return redirect()->route('informasi-lowongan');
     }
 
-    public function editLowongan($id)
+    public function deleteLowongan($id)
     {
-        if (!Session::has('perusahaan')) {
-            return redirect()->route('login-perusahaan');
-        }
-
         $perusahaan = Session::get('perusahaan');
 
         $lowongan = Lowongan::where('lowongan_id', $id)
-            ->where('perusahaan_id', $perusahaan->perusahaan_id)
-            ->first();
-
-        if (!$lowongan) {
-            return redirect()->back()->with('error', 'Lowongan tidak ditemukan.');
-        }
-
-        return view('perusahaan.edit', compact('lowongan'));
-    }
-
-    public function updateLowongan(Request $request, $id)
-    {
-        if (!Session::has('perusahaan')) {
-            return redirect()->route('login-perusahaan');
-        }
-
-        $request->validate([
-            'posisi' => 'required',
-            'persyaratan' => 'required',
-            'kategori_pekerjaan' => 'required'
-        ]);
-
-        $perusahaan = Session::get('perusahaan');
-
-        $lowongan = Lowongan::where('lowongan_id', $id)
-            ->where('perusahaan_id', $perusahaan->perusahaan_id)
-            ->first();
-
-        if (!$lowongan) {
-            return redirect()->back()->with('error', 'Data lowongan tidak ditemukan.');
-        }
-
-        $lowongan->update([
-            'posisi' => $request->posisi,
-            'persyaratan' => $request->persyaratan,
-            'kategori_pekerjaan' => $request->kategori_pekerjaan,
-        ]);
-
-        return redirect()->route('informasi-lowongan')
-            ->with('success', 'Lowongan berhasil diperbarui.');
-    }
-
-    public function detailLowongan($id)
-    {
-        if (!Session::has('perusahaan')) {
-            return redirect()->route('login-perusahaan');
-        }
-
-        $perusahaan = Session::get('perusahaan');
-
-        $lowongan = Lowongan::with('perusahaan')
-            ->where('lowongan_id', $id)
             ->where('perusahaan_id', $perusahaan->perusahaan_id)
             ->firstOrFail();
 
-        return view('perusahaan.detail', [
-            'lowongan' => $lowongan
-        ]);
-    }
+        $lowongan->lamaran()->delete();
+        $lowongan->delete();
 
+        return redirect()->route('informasi-lowongan');
+    }
 }
