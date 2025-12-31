@@ -2,10 +2,6 @@
 
 @section('title', 'Beranda - Koneksibilitas')
 
-@section('search')
-    <input type="text" placeholder="Cari pekerjaan..." class="search-input" />
-@endsection
-
 @section('content')
 
     {{-- HERO --}}
@@ -14,36 +10,57 @@
             Gunakan Kesempatanmu <span class="text-primary">Di Koneksibilitas</span>
         </h1>
         <p class="text-muted mt-2">
-            Saatnya tunjukkan kemampuanmu dan dapatkan peluang kerja yang setara.
+            Temukan lowongan pekerjaan yang tersedia untuk kamu
         </p>
     </section>
 
     {{-- REKOMENDASI --}}
     <section class="mt-5">
-        <h2 class="h5 fw-semibold mb-3">Rekomendasi untuk kamu</h2>
+
 
         <div class="row g-4">
 
+            <div class="row" id="lowongan-list">
+                @foreach ($data as $index => $item)
+                    <div class="col-md-4 mb-4 lowongan-item {{ $index >= 6 ? 'd-none' : '' }}">
+                        <div class="card-soft p-4 text-center h-100">
+                            <img src="{{ asset('assets/img/logoperusahaan.png') }}" class="w-25 mx-auto mb-3"
+                                alt="">
 
-            @foreach ($data as $item)
-                <div class="col-md-4 mb-4">
-                    <div class="card-soft p-4 text-center h-100">
-                        <img src="{{ asset('assets/img/logoperusahaan.png') }}" class="w-25 mx-auto mb-3" alt="">
+                            <h5 class="fw-semibold">
+                                {{ $item->posisi }}
+                            </h5>
 
-                        <h5 class="fw-semibold">
-                            {{ $item->posisi }}
-                        </h5>
+                            <p class="text-muted small mb-3">
+                                {{ $item->perusahaan->nama_perusahaan }}
+                            </p>
 
-                        <p class="text-muted small mb-3">
-                            {{ $item->perusahaan->nama_perusahaan }}
-                        </p>
-
-                        <a href="{{ route('lowongan.detail', $item->lowongan_id) }}" class="btn btn-primary w-100">
-                            Info
-                        </a>
+                            <a href="{{ route('lowongan.detail', $item->lowongan_id) }}" class="btn btn-primary w-100">
+                                Info
+                            </a>
+                        </div>
                     </div>
+                @endforeach
+            </div>
+
+            {{-- Button Baca Selengkapnya --}}
+            @if (count($data) > 6)
+                <div class="text-center mt-3">
+                    <button class="btn btn-outline-primary" id="btnShowAll">
+                        Baca Selengkapnya
+                    </button>
                 </div>
-            @endforeach
+            @endif
+            <script>
+                document.getElementById('btnShowAll')?.addEventListener('click', function() {
+                    document.querySelectorAll('.lowongan-item').forEach(item => {
+                        item.classList.remove('d-none');
+                    });
+
+                    this.style.display = 'none';
+                });
+            </script>
+
 
         </div>
     </section>

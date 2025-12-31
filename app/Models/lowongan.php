@@ -39,4 +39,9 @@ class lowongan extends Model
             'lowongan_id'
         );
     }
+
+    protected $casts = [
+        'created_at'  => 'datetime',
+        'approved_at' => 'datetime',
+    ];
 }

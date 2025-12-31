@@ -16,22 +16,20 @@ class LowonganController extends Controller
     public function index(Request $request)
     {
         $query = Lowongan::with('perusahaan')
-            ->whereNotNull('approved_at') // Hanya lowongan yang sudah disetujui
+            ->whereNotNull('approved_at')  // Hanya lowongan yang sudah disetujui
             ->orderBy('created_at', 'desc');
 
-        // Filter by kategori
-        if ($request->has('kategori')) {
-            $query->where('kategori_pekerjaan', $request->kategori);
-        }
+        if ($request->filled('search')) {
+            $search = $request->search;
 
-        // Filter by perusahaan
-        if ($request->has('perusahaan_id')) {
-            $query->where('perusahaan_id', $request->perusahaan_id);
-        }
-
-        // Search by posisi
-        if ($request->has('search')) {
-            $query->where('posisi', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($search) {
+                $q
+                    ->where('posisi', 'ILIKE', "%{$search}%")
+                    ->orWhere('kategori_pekerjaan', 'ILIKE', "%{$search}%")
+                    ->orWhereHas('perusahaan', function ($qp) use ($search) {
+                        $qp->where('nama_perusahaan', 'ILIKE', "%{$search}%");
+                    });
+            });
         }
 
         // Pagination
@@ -55,11 +53,11 @@ class LowonganController extends Controller
      * DETAIL LOWONGAN
      * =====================
      */
-    public function show($id)
+    public function show($lowongan_id)
     {
         $lowongan = Lowongan::with('perusahaan')
             ->whereNotNull('approved_at')
-            ->find($id);
+            ->find($lowongan_id);
 
         if (!$lowongan) {
             return response()->json([
@@ -81,7 +79,7 @@ class LowonganController extends Controller
                     'alamat' => $lowongan->perusahaan->alamat ?? null,
                     'email' => $lowongan->perusahaan->email ?? null,
                 ],
-                'created_at' => $lowongan->created_at->format('Y-m-d H:i:s'),
+                'created_at' => $lowongan->created_at ? $lowongan->created_at->format('Y-m-d H:i:s') : null,
                 'approved_at' => $lowongan->approved_at ? $lowongan->approved_at->format('Y-m-d H:i:s') : null,
             ]
         ]);
