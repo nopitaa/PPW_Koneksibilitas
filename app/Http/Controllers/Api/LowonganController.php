@@ -11,8 +11,10 @@ class LowonganController extends Controller
     public function index(Request $request)
     {
         $query = Lowongan::with('perusahaan')
-            ->whereNotNull('status')  // Hanya lowongan yang sudah disetujui
-            ->orderBy('created_at', 'desc');
+            ->where('status', 'disetujui')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -51,8 +53,9 @@ class LowonganController extends Controller
     public function show($lowongan_id)
     {
         $lowongan = Lowongan::with('perusahaan')
-            ->whereNotNull('status')
-            ->find($lowongan_id);
+            ->where('status', 'disetujui')
+            ->orderBy('created_at', 'desc')
+            ->first();
 
         if (!$lowongan) {
             return response()->json([
@@ -75,7 +78,7 @@ class LowonganController extends Controller
                     'email' => $lowongan->perusahaan->email ?? null,
                 ],
                 'created_at' => $lowongan->created_at ? $lowongan->created_at->format('Y-m-d H:i:s') : null,
-                'status' => $lowongan->status ? $lowongan->status->format('Y-m-d H:i:s') : null,
+                'status' => $lowongan->status ?? null,
             ]
         ]);
     }
