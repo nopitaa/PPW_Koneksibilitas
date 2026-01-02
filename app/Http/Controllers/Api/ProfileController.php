@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    /**
-     * =====================
-     * GET PROFILE (API)
-     * =====================
-     */
     public function show(Request $request)
     {
         $user = $request->user();
@@ -43,11 +38,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * =====================
-     * UPDATE PROFILE (API)
-     * =====================
-     */
     public function update(Request $request)
     {
         $user = $request->user();

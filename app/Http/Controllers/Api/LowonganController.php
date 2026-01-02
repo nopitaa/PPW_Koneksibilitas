@@ -8,11 +8,6 @@ use Illuminate\Http\Request;
 
 class LowonganController extends Controller
 {
-    /**
-     * =====================
-     * LIST LOWONGAN (MOBILE)
-     * =====================
-     */
     public function index(Request $request)
     {
         $query = Lowongan::with('perusahaan')
