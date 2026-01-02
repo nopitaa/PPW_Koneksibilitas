@@ -29,6 +29,6 @@ class Lowongan extends Model
 
     protected $casts = [
         'created_at'  => 'datetime',
-        'approved_at' => 'datetime',
+        'status' => 'varchar',
     ];
 }
