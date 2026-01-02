@@ -6,16 +6,13 @@ use App\Http\Controllers\Api\LowonganController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\LamaranController;
 use App\Http\Controllers\Api\KeterampilanController;
+use App\Http\Controllers\Api\UserController;
 
-/*
-|--------------------------------------------------------------------------
-| Public API Routes (No Authentication Required)
-|--------------------------------------------------------------------------
-*/
 
 // Authentication
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::get('/status-lamaran', [UserController::class, 'getStatusLamaran']);
 
 // Public Lowongan (hanya yang approved)
 Route::get('/lowongan', [LowonganController::class, 'index']);
