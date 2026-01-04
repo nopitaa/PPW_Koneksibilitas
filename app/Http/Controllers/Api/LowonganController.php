@@ -8,28 +8,26 @@ use Illuminate\Http\Request;
 
 class LowonganController extends Controller
 {
+
     public function index(Request $request)
     {
         $query = Lowongan::with('perusahaan')
             ->where('status', 'disetujui')
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->orderBy('created_at', 'desc');
 
-
+        // SEARCH
         if ($request->filled('search')) {
             $search = $request->search;
 
             $query->where(function ($q) use ($search) {
-                $q
-                    ->where('posisi', 'ILIKE', "%{$search}%")
-                    ->orWhere('kategori_pekerjaan', 'ILIKE', "%{$search}%")
-                    ->orWhereHas('perusahaan', function ($qp) use ($search) {
-                        $qp->where('nama_perusahaan', 'ILIKE', "%{$search}%");
-                    });
+                $q->where('posisi', 'like', "%{$search}%")
+                  ->orWhere('kategori_pekerjaan', 'like', "%{$search}%")
+                  ->orWhereHas('perusahaan', function ($qp) use ($search) {
+                      $qp->where('nama_perusahaan', 'like', "%{$search}%");
+                  });
             });
         }
 
-        // Pagination
         $perPage = $request->get('per_page', 15);
         $lowongan = $query->paginate($perPage);
 
@@ -53,8 +51,8 @@ class LowonganController extends Controller
     public function show($lowongan_id)
     {
         $lowongan = Lowongan::with('perusahaan')
+            ->where('lowongan_id', $lowongan_id)
             ->where('status', 'disetujui')
-            ->orderBy('created_at', 'desc')
             ->first();
 
         if (!$lowongan) {
@@ -77,8 +75,8 @@ class LowonganController extends Controller
                     'alamat' => $lowongan->perusahaan->alamat ?? null,
                     'email' => $lowongan->perusahaan->email ?? null,
                 ],
-                'created_at' => $lowongan->created_at ? $lowongan->created_at->format('Y-m-d H:i:s') : null,
-                'status' => $lowongan->status ?? null,
+                'created_at' => optional($lowongan->created_at)->format('Y-m-d H:i:s'),
+                'status' => $lowongan->status,
             ]
         ]);
     }
