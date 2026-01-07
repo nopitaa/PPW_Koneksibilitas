@@ -65,6 +65,7 @@ class LowonganController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
+                'lowongan_id' => $lowongan->lowongan_id,
                 'id' => $lowongan->lowongan_id,
                 'posisi' => $lowongan->posisi,
                 'kategori_pekerjaan' => $lowongan->kategori_pekerjaan,
