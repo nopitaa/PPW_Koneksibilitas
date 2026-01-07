@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('lamaran', function (Blueprint $table) {
             $table->id('lamaran_id');
             $table->foreignId('user_id')->constrained('users', 'user_id'); 
-            $table->foreignId('lowongan_id')->constrained('lowongan', 'lowongan_id'); 
+            $table->foreignId('lowongan_id')->nullable()->constrained('lowongan', 'lowongan_id')->nullOnDelete(); 
             $table->string('nama_lengkap');
             $table->string('jenis_kelamin');
             $table->string('nomor_hp');
@@ -29,6 +29,7 @@ return new class extends Migration
             $table->text('cv');
             $table->text('resume');
             $table->text('portofolio');
+            $table->string('status')->default('draft');
             $table->timestamps();
         });
     }
