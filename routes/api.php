@@ -12,6 +12,12 @@ use App\Http\Controllers\Api\UserController;
 // Authentication
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/profile', [App\Http\Controllers\Api\ProfileController::class, 'show']);
+    Route::post('/profile', [App\Http\Controllers\Api\ProfileController::class, 'update']); // Pakai POST untuk update data + file
+    Route::get('/skills', [App\Http\Controllers\Api\ProfileController::class, 'getSkills']);
+});
 Route::get('/status-lamaran', [UserController::class, 'getStatusLamaran']);
 
 // Public Lowongan (hanya yang approved)
