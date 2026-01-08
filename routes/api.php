@@ -17,8 +17,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [App\Http\Controllers\Api\ProfileController::class, 'show']);
     Route::post('/profile', [App\Http\Controllers\Api\ProfileController::class, 'update']);
     Route::get('/skills', [App\Http\Controllers\Api\ProfileController::class, 'getSkills']);
+    Route::get('/status-lamaran', [UserController::class, 'getStatusLamaranApi']);
 });
-Route::get('/status-lamaran', [UserController::class, 'getStatusLamaran']);
+
 Route::get('/lowongan', [LowonganController::class, 'index']);
 Route::get('/lowongan/{lowongan_id}', [LowonganController::class, 'show']);
 Route::get('/keterampilan', [KeterampilanController::class, 'index']);
