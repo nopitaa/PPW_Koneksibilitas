@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title>@yield('title', 'KONEKSIBILITAS')</title>
 
@@ -36,14 +37,21 @@
       font-size: 0.875rem;
       transition: all .2s;
     }
-    .nav-link:hover {
+    .nav-link:not(.btn):hover {
       color: var(--brand);
     }
-    .nav-link.active,
-    .nav-link:focus,
-    .nav-link:active {
+    .nav-link.active:not(.btn),
+    .nav-link:focus:not(.btn),
+    .nav-link:active:not(.btn) {
       color: var(--brand) !important;
       font-weight:600;
+    }
+    /* Pastikan tombol Login selalu terlihat jelas */
+    .nav-link.btn-primary,
+    .nav-link.btn-primary:hover,
+    .nav-link.btn-primary:focus,
+    .nav-link.btn-primary:active {
+      color: #fff !important;
     }
     .avatar{ width:120px; height:120px; border-radius:50%; object-fit:cover; }
     .card-soft{ background:#fff; border:1px solid #edf1f5; border-radius: var(--radius); }
@@ -137,28 +145,42 @@
     <div class="collapse navbar-collapse justify-content-end" id="navMain">
       <ul class="navbar-nav gap-2">
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Beranda</a>
+          <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
+            <i class="bi bi-house me-1"></i>Dashboard
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('lowongan_tersimpan') ? 'active' : '' }}" href="{{ route('lowongan_tersimpan') }}">Simpan</a>
+          <a class="nav-link {{ request()->routeIs('karir') ? 'active' : '' }}" href="{{ route('karir') }}">
+            <i class="bi bi-briefcase me-1"></i>Karir
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ request()->is('status') ? 'active' : '' }}" href="{{ route ('status.lamaran') }}">Status</a>
+          <a class="nav-link {{ request()->routeIs('lowongan_tersimpan') ? 'active' : '' }}" href="{{ route('lowongan_tersimpan') }}">
+            <i class="bi bi-bookmark me-1"></i>Simpan
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('status.lamaran') ? 'active' : '' }}" href="{{ route('status.lamaran') }}">
+            <i class="bi bi-clipboard-check me-1"></i>Status
+          </a>
         </li>
 
         @guest
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('login') }}">Login</a>
+          <a class="btn btn-primary px-3 ms-1 pill" href="{{ route('login') }}" style="font-size:0.875rem;">Login</a>
         </li>
         @else
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ Auth::user()->nama_depan ?? Auth::user()->email }}</a>
+          <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle me-1"></i>{{ Auth::user()->nama_depan ?? Auth::user()->email }}
+          </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-            <li><a class="dropdown-item" href="{{ route('profile.show') }}">Profile</a></li>
+            <li><a class="dropdown-item" href="{{ route('profile.show') }}"><i class="bi bi-person me-2"></i>Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
             <li>
               <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button class="dropdown-item" type="submit">Logout</button>
+                <button class="dropdown-item text-danger" type="submit"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
               </form>
             </li>
           </ul>

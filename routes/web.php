@@ -14,16 +14,15 @@ use App\Http\Controllers\PerusahaanController;
 
 // ROUTE BAGIAN USER
 // homepage should be beranda; login page at /login
-Route::get('/', function () { return redirect()->route('home'); });
+Route::get('/', [UserController::class, 'beranda'])->name('home');
 Route::get('/login',[UserController::class,'formLogin'])->name('login');
 Route::post('/login',[UserController::class,'login'])->name('login.process');
 Route::post('/logout',[UserController::class,'logout'])->name('logout');
 Route::get('/register',[UserController::class,'formRegister'])->name('register');
 Route::post('/register',[UserController::class,'register'])->name('register.process');
-Route::get('/beranda',[UserController::class,'beranda'])->name('home');
+Route::get('/karir', [UserController::class, 'karir'])->name('karir');
 Route::get('/lowongan/{id}', [UserController::class, 'show'])->name('lowongan.detail');
 Route::post('/lowongan/{id}/simpan',[LowonganController::class, 'toggleSimpanSession'])->name('lowongan.simpan');
-Route::get('/status-lamaran', [UserController::class, 'statuslamaran'])->name('status.lamaran');
 Route::get('/simpan', [LowonganController::class, 'tersimpanSession'])
     ->name('lowongan_tersimpan');
 
@@ -80,6 +79,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/update', [ProfileController::class, 'update'])
         ->name('profile.update');
 
+    Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])
+        ->name('profile.avatar.upload');
+
     Route::get('/profile/view/{type}', [ProfileController::class, 'view'])
         ->name('profile.view');
 
@@ -130,10 +132,11 @@ Route::post('/register-perusahaan', [PerusahaanController::class, 'register'])->
 //admin
 // Route::get('/dashboard', [CompanyController::class, 'dashboard'])->name('dashboard');
 Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-// Route::get('/admin/perusahaan', [CompanyController::class, 'index'])->name('perusahaan'); 
+// Route::get('/admin/perusahaan', [CompanyController::class, 'index'])->name('perusahaan');
 Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.submit');
 Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 Route::post('/admin/lowongan/{id}/approve', [AdminController::class, 'approve'])->name('lowongan.approve');
 Route::post('/admin/lowongan/{id}/reject', [AdminController::class, 'reject'])->name('lowongan.reject');
 Route::get('/admin/perusahaan', [AdminController::class, 'perusahaan'])->name('perusahaan');
+Route::get('/admin/pengajuan', [AdminController::class, 'pengajuan'])->name('admin.pengajuan');

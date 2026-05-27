@@ -45,6 +45,39 @@ class LowonganController extends Controller
 
     /**
      * =====================
+     * LOWONGAN TERBARU (untuk dashboard)
+     * Mengembalikan 8 lowongan terbaru tanpa pagination
+     * =====================
+     */
+    public function terbaru()
+    {
+        $lowongan = Lowongan::with('perusahaan')
+            ->where('status', 'disetujui')
+            ->orderBy('created_at', 'desc')
+            ->limit(8)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'lowongan_id'        => $item->lowongan_id,
+                    'posisi'             => $item->posisi,
+                    'kategori_pekerjaan' => $item->kategori_pekerjaan,
+                    'created_at'         => optional($item->created_at)->format('Y-m-d H:i:s'),
+                    'perusahaan' => [
+                        'nama'   => $item->perusahaan->nama_perusahaan ?? null,
+                        'alamat' => $item->perusahaan->alamat ?? null,
+                    ],
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'data'    => $lowongan,
+            'total'   => $lowongan->count(),
+        ]);
+    }
+
+    /**
+     * =====================
      * DETAIL LOWONGAN
      * =====================
      */

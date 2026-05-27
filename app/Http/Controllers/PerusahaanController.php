@@ -7,6 +7,7 @@ use App\Models\Lowongan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 class PerusahaanController extends Controller
 {
@@ -23,19 +24,28 @@ class PerusahaanController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'nama_perusahaan' => 'required|string|max:255',
-            'alamat'          => 'required|string',
-            'email'           => 'required|email|unique:perusahaan,email',
-            'nomor_npwp'      => 'required|string',
-            'password'        => 'required|min:6|confirmed',
+            'nama_perusahaan'   => 'required|string|max:255',
+            'alamat'            => 'required|string',
+            'email'             => 'required|email|unique:perusahaan,email',
+            'nomor_npwp'        => 'required|string',
+            'password'          => 'required|min:6|confirmed',
+            'dokumen_legalitas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
+        // Upload dokumen legalitas jika ada
+        $pathDokumen = null;
+        if ($request->hasFile('dokumen_legalitas')) {
+            $pathDokumen = $request->file('dokumen_legalitas')
+                ->store('dokumen_legalitas', 'public');
+        }
+
         $perusahaan = Perusahaan::create([
-            'nama_perusahaan' => $request->nama_perusahaan,
-            'alamat'          => $request->alamat,
-            'email'           => $request->email,
-            'nomor_npwp'      => $request->nomor_npwp,
-            'password'        => Hash::make($request->password),
+            'nama_perusahaan'   => $request->nama_perusahaan,
+            'alamat'            => $request->alamat,
+            'email'             => $request->email,
+            'nomor_npwp'        => $request->nomor_npwp,
+            'password'          => Hash::make($request->password),
+            'dokumen_legalitas' => $pathDokumen,
         ]);
 
         Session::put('perusahaan', $perusahaan);

@@ -74,7 +74,7 @@ class ProfileController extends Controller
             'about'     => ['nullable', 'string', 'max:1000'],
             'skills'    => ['nullable', 'array'],
             'skills.*'  => ['string'],
-            'avatar'    => ['nullable', 'image', 'max:2048'],
+            'avatar'    => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
             'cv'        => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
             'resume'    => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
             'portfolio' => ['nullable', 'file', 'mimes:pdf,doc,docx,zip', 'max:5120'],
@@ -89,28 +89,28 @@ class ProfileController extends Controller
          * ===== FILE UPLOAD (AMAN, TIDAK ADA delete(null)) =====
          */
 
-        if ($request->hasFile('avatar')) {
+        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
             if ($profile->avatar_path && Storage::disk('public')->exists($profile->avatar_path)) {
                 Storage::disk('public')->delete($profile->avatar_path);
             }
             $data['avatar_path'] = $request->file('avatar')->store('profiles', 'public');
         }
 
-        if ($request->hasFile('cv')) {
+        if ($request->hasFile('cv') && $request->file('cv')->isValid()) {
             if ($profile->cv_path && Storage::disk('public')->exists($profile->cv_path)) {
                 Storage::disk('public')->delete($profile->cv_path);
             }
             $data['cv_path'] = $request->file('cv')->store('profiles', 'public');
         }
 
-        if ($request->hasFile('resume')) {
+        if ($request->hasFile('resume') && $request->file('resume')->isValid()) {
             if ($profile->resume_path && Storage::disk('public')->exists($profile->resume_path)) {
                 Storage::disk('public')->delete($profile->resume_path);
             }
             $data['resume_path'] = $request->file('resume')->store('profiles', 'public');
         }
 
-        if ($request->hasFile('portfolio')) {
+        if ($request->hasFile('portfolio') && $request->file('portfolio')->isValid()) {
             if ($profile->portfolio_path && Storage::disk('public')->exists($profile->portfolio_path)) {
                 Storage::disk('public')->delete($profile->portfolio_path);
             }
@@ -123,7 +123,7 @@ class ProfileController extends Controller
         $profile->update([
             'name'           => $data['name'] ?? $profile->name,
             'about'          => $data['about'] ?? $profile->about,
-            'skills'         => $skillsArray,
+            'skills'         => $skillsArray ?? $profile->skills,
             'avatar_path'    => $data['avatar_path'] ?? $profile->avatar_path,
             'cv_path'        => $data['cv_path'] ?? $profile->cv_path,
             'resume_path'    => $data['resume_path'] ?? $profile->resume_path,
@@ -133,6 +133,41 @@ class ProfileController extends Controller
         return redirect()
             ->route('profile.show')
             ->with('success', 'Profil berhasil diperbarui.');
+    }
+
+    /**
+     * AJAX — Upload avatar saja, tanpa submit form lengkap.
+     * Returns JSON: { success, avatar_url, message }
+     */
+    public function uploadAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+        ]);
+
+        if (!$request->hasFile('avatar') || !$request->file('avatar')->isValid()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'File tidak valid atau tidak ditemukan.',
+            ], 422);
+        }
+
+        $profile = $this->getProfile();
+
+        // Hapus avatar lama jika ada
+        if ($profile->avatar_path && Storage::disk('public')->exists($profile->avatar_path)) {
+            Storage::disk('public')->delete($profile->avatar_path);
+        }
+
+        // Simpan avatar baru
+        $path = $request->file('avatar')->store('profiles', 'public');
+        $profile->update(['avatar_path' => $path]);
+
+        return response()->json([
+            'success'    => true,
+            'message'    => 'Foto profil berhasil diperbarui.',
+            'avatar_url' => asset('storage/' . $path),
+        ]);
     }
 
     public function view(string $type)

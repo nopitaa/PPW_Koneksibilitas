@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/lowongan', [LowonganController::class, 'index']);
+Route::get('/lowongan/terbaru', [LowonganController::class, 'terbaru']);
 Route::get('/lowongan/{lowongan_id}', [LowonganController::class, 'show']);
 Route::get('/keterampilan', [KeterampilanController::class, 'index']);
 

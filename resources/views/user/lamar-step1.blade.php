@@ -64,12 +64,22 @@
             <label class="form-label fw-semibold">
                 Nomor HP <span class="text-danger">*</span>
             </label>
-            <input type="text"
+            <input type="number"
                    class="form-control"
+                   id="no_hp"
                    name="no_hp"
                    placeholder="Masukkan nomor HP aktif"
                    value="{{ old('no_hp') }}"
+                   pattern="[0-9]+"
+                   inputmode="numeric"
+                   maxlength="15"
                    required>
+            <div id="no_hp_error" class="invalid-feedback" style="display:none;">
+                ⚠️ Nomor HP hanya boleh berisi angka (contoh: 08123456789).
+            </div>
+            <div id="no_hp_valid" class="valid-feedback" style="display:none;">
+                Format nomor HP valid.
+            </div>
         </div>
 
         {{-- Alamat --}}
@@ -105,4 +115,72 @@
 
     </form>
 </div>
+
+@push('body')
+<script>
+(function () {
+    const input = document.getElementById('no_hp');
+    const errorDiv = document.getElementById('no_hp_error');
+    const validDiv = document.getElementById('no_hp_valid');
+
+    if (!input) return;
+
+    // Blokir karakter non-angka saat diketik
+    input.addEventListener('keypress', function (e) {
+        const char = String.fromCharCode(e.which);
+        if (!/[0-9]/.test(char)) {
+            e.preventDefault();
+        }
+    });
+
+    // Hapus karakter non-angka jika ditempel (paste)
+    input.addEventListener('input', function () {
+        const cleaned = this.value.replace(/[^0-9]/g, '');
+        if (this.value !== cleaned) {
+            this.value = cleaned;
+        }
+        validateHP();
+    });
+
+    // Validasi saat field kehilangan fokus
+    input.addEventListener('blur', validateHP);
+
+    function validateHP() {
+        const val = input.value.trim();
+
+        if (val === '') {
+            // Kosong – biarkan required HTML5 handle
+            input.classList.remove('is-valid', 'is-invalid');
+            errorDiv.style.display = 'none';
+            validDiv.style.display = 'none';
+            return;
+        }
+
+        if (/^[0-9]+$/.test(val)) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+            errorDiv.style.display = 'none';
+            validDiv.style.display = 'block';
+        } else {
+            input.classList.remove('is-valid');
+            input.classList.add('is-invalid');
+            errorDiv.style.display = 'block';
+            validDiv.style.display = 'none';
+        }
+    }
+
+    // Cegah submit jika ada karakter non-angka
+    input.closest('form').addEventListener('submit', function (e) {
+        const val = input.value.trim();
+        if (val !== '' && !/^[0-9]+$/.test(val)) {
+            e.preventDefault();
+            input.classList.add('is-invalid');
+            errorDiv.style.display = 'block';
+            input.focus();
+        }
+    });
+})();
+</script>
+@endpush
+
 @endsection

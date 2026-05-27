@@ -106,7 +106,7 @@
         <p class="p">Daftar Sebagai Penyedia Kerja</p>
 
         <div class="card-body">
-            <form action="{{ route('register-perusahaan.process') }}" method="POST">
+            <form action="{{ route('register-perusahaan.process') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <!-- EMAIL (SAMA PERSIS) -->
@@ -173,6 +173,22 @@
                     </span>
                     <input type="password" class="form-control" name="password_confirmation"
                         placeholder="Konfirmasi Password" required autocomplete="new-password">
+                </div>
+
+                <!-- DOKUMEN LEGALITAS (OPSIONAL) -->
+                <div class="mb-3 text-start">
+                    <label class="form-label" style="font-size:12px; color:#555; font-weight:600;">
+                        Dokumen Legalitas
+                        <span class="text-muted" style="font-weight:400;">(opsional — PDF/JPG/PNG, maks. 2MB)</span>
+                    </label>
+                    <input type="file"
+                           class="form-control"
+                           name="dokumen_legalitas"
+                           id="dokumen_legalitas"
+                           accept=".pdf,.jpg,.jpeg,.png">
+                    @error('dokumen_legalitas')
+                        <div class="text-danger" style="font-size:11px;">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-check">

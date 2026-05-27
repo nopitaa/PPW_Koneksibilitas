@@ -16,53 +16,51 @@
 
     {{-- REKOMENDASI --}}
     <section class="mt-5">
+        <div class="mb-4">
+            <h2 class="h5 fw-bold mb-1">Lowongan Terbaru</h2>
+            <p class="text-muted small mb-0">Kesempatan kerja yang baru ditambahkan</p>
+        </div>
 
+        @if(count($data) > 0)
+            <div class="row g-4" id="lowongan-list">
+                @foreach ($data as $item)
+                    <div class="col-md-4 mb-2">
+                        <div class="card-soft p-4 text-center h-100 d-flex flex-column">
+                            <img src="{{ asset('assets/img/logoperusahaan.png') }}" class="w-25 mx-auto mb-3" alt="">
 
-        <div class="row g-4">
+                            <h5 class="fw-semibold mb-1">{{ $item->posisi }}</h5>
 
-            <div class="row" id="lowongan-list">
-                @foreach ($data as $index => $item)
-                    <div class="col-md-4 mb-4 lowongan-item {{ $index >= 6 ? 'd-none' : '' }}">
-                        <div class="card-soft p-4 text-center h-100">
-                            <img src="{{ asset('assets/img/logoperusahaan.png') }}" class="w-25 mx-auto mb-3"
-                                alt="">
+                            <p class="text-muted small mb-1">{{ $item->perusahaan->nama_perusahaan }}</p>
 
-                            <h5 class="fw-semibold">
-                                {{ $item->posisi }}
-                            </h5>
+                            @if($item->kategori_pekerjaan)
+                                <span class="badge bg-primary bg-opacity-10 text-primary small mb-3">{{ $item->kategori_pekerjaan }}</span>
+                            @endif
 
-                            <p class="text-muted small mb-3">
-                                {{ $item->perusahaan->nama_perusahaan }}
-                            </p>
-
-                            <a href="{{ route('lowongan.detail', $item->lowongan_id) }}" class="btn btn-primary w-100">
-                                Info
-                            </a>
+                            <div class="mt-auto pt-2">
+                                <p class="text-muted" style="font-size:0.75rem">
+                                    <i class="bi bi-clock me-1"></i>{{ $item->created_at->diffForHumans() }}
+                                </p>
+                                <a href="{{ route('lowongan.detail', $item->lowongan_id) }}" class="btn btn-primary w-100 btn-sm">
+                                    Lihat Detail
+                                </a>
+                            </div>
                         </div>
                     </div>
                 @endforeach
             </div>
 
-            {{-- Button Baca Selengkapnya --}}
-            @if (count($data) > 6)
-                <div class="text-center mt-3">
-                    <button class="btn btn-outline-primary" id="btnShowAll">
-                        Baca Selengkapnya
-                    </button>
-                </div>
-            @endif
-            <script>
-                document.getElementById('btnShowAll')?.addEventListener('click', function() {
-                    document.querySelectorAll('.lowongan-item').forEach(item => {
-                        item.classList.remove('d-none');
-                    });
-
-                    this.style.display = 'none';
-                });
-            </script>
-
-
-        </div>
+            {{-- CTA ke halaman Karir --}}
+            <div class="text-center mt-5">
+                <a href="{{ route('karir') }}" class="btn btn-primary px-5 py-2 pill">
+                    <i class="bi bi-briefcase me-2"></i>Jelajahi Semua Lowongan
+                </a>
+            </div>
+        @else
+            <div class="text-center py-5">
+                <i class="bi bi-briefcase" style="font-size:3rem;color:#dee2e6;"></i>
+                <p class="text-muted mt-3">Belum ada lowongan tersedia saat ini.</p>
+            </div>
+        @endif
     </section>
 
     {{-- PELATIHAN --}}
@@ -141,12 +139,27 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        // Cek apakah ada session "success" yang dikirim dari Login
-        @if (session('success'))
+        // Alert Login Berhasil
+        @if (session('login_success'))
             Swal.fire({
-                title: "Login Berhasil",
-                text: "{{ session('success') }}", // Mengambil pesan dari Controller
-                icon: "success"
+                title: "Login Berhasil! 🎉",
+                text: "{{ session('login_success') }}",
+                icon: "success",
+                timer: 2500,
+                timerProgressBar: true,
+                showConfirmButton: false,
+            });
+        @endif
+
+        // Alert Logout Berhasil
+        @if (session('logout_success'))
+            Swal.fire({
+                title: "Logout Berhasil",
+                text: "{{ session('logout_success') }}",
+                icon: "info",
+                timer: 2500,
+                timerProgressBar: true,
+                showConfirmButton: false,
             });
         @endif
     </script>

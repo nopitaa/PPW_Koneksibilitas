@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Lowongan;
 use App\Models\Lamaran;
+use App\Models\Perusahaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -64,7 +65,8 @@ class UserController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('home');
+            return redirect()->route('home')
+                ->with('login_success', 'Selamat datang, ' . Auth::user()->nama_depan . '!');
         }
 
         return back()->with('error', 'Email atau password salah.');
@@ -72,8 +74,52 @@ class UserController extends Controller
 
     public function beranda()
     {
-        $data = Lowongan::with('perusahaan')->get();
+        // Hanya tampilkan 8 lowongan terbaru yang sudah disetujui
+        $data = Lowongan::with('perusahaan')
+            ->where('status', 'disetujui')
+            ->orderBy('created_at', 'desc')
+            ->limit(6)
+            ->get();
+
         return view('user.beranda', compact('data'));
+    }
+
+    public function karir(Request $request)
+    {
+        $query = Lowongan::with('perusahaan')
+            ->where('status', 'disetujui')
+            ->orderBy('created_at', 'desc');
+
+        // Search: posisi, kategori, atau nama perusahaan
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('posisi', 'like', "%{$search}%")
+                  ->orWhere('kategori_pekerjaan', 'like', "%{$search}%")
+                  ->orWhereHas('perusahaan', function ($qp) use ($search) {
+                      $qp->where('nama_perusahaan', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Filter berdasarkan kategori pekerjaan
+        if ($request->filled('kategori')) {
+            $query->where('kategori_pekerjaan', $request->kategori);
+        }
+
+        $lowongan = $query->paginate(12)->withQueryString();
+
+        // Ambil semua kategori yang tersedia untuk dropdown filter
+        $kategoris = Lowongan::where('status', 'disetujui')
+            ->whereNotNull('kategori_pekerjaan')
+            ->distinct()
+            ->pluck('kategori_pekerjaan')
+            ->sort()
+            ->values();
+
+        $totalLowongan = Lowongan::where('status', 'disetujui')->count();
+
+        return view('user.karir', compact('lowongan', 'kategoris', 'totalLowongan'));
     }
 
     public function show($id)
@@ -108,7 +154,7 @@ class UserController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')
-            ->with('success', 'Anda berhasil logout.');
+        return redirect()->route('home')
+            ->with('logout_success', 'Anda berhasil logout. Sampai jumpa!');
     }
 }

@@ -54,25 +54,64 @@ class AdminController extends Controller
             ->orderBy('lowongan_id', 'desc')
             ->get();
 
-        return view('admin.dashboard', compact('lowongans'));
+        // Statistik untuk card summary
+        $totalLowonganAktif  = Lowongan::where('status', 'disetujui')->count();
+        $totalPerusahaan     = \App\Models\Perusahaan::count();
+        $totalPending        = Lowongan::where('status', 'pending')
+                                ->orWhereNull('status')->count();
+        $totalDitolak        = Lowongan::where('status', 'ditolak')->count();
+
+        return view('admin.dashboard', compact(
+            'lowongans',
+            'totalLowonganAktif',
+            'totalPerusahaan',
+            'totalPending',
+            'totalDitolak'
+        ));
     }
 
     // ✅ APPROVE (pakai status varchar)
-    public function approve($id)
+    public function approve(Request $request, $id)
     {
         Lowongan::where('lowongan_id', $id)->update([
             'status' => 'disetujui'
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Lowongan berhasil disetujui',
+                'stats' => [
+                    'aktif' => Lowongan::where('status', 'disetujui')->count(),
+                    'perusahaan' => \App\Models\Perusahaan::count(),
+                    'pending' => Lowongan::where('status', 'pending')->orWhereNull('status')->count(),
+                    'ditolak' => Lowongan::where('status', 'ditolak')->count(),
+                ]
+            ]);
+        }
+
         return back()->with('success', 'Lowongan berhasil disetujui');
     }
 
     // ✅ REJECT (pakai status varchar)
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
         Lowongan::where('lowongan_id', $id)->update([
             'status' => 'ditolak'
         ]);
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Lowongan ditolak',
+                'stats' => [
+                    'aktif' => Lowongan::where('status', 'disetujui')->count(),
+                    'perusahaan' => \App\Models\Perusahaan::count(),
+                    'pending' => Lowongan::where('status', 'pending')->orWhereNull('status')->count(),
+                    'ditolak' => Lowongan::where('status', 'ditolak')->count(),
+                ]
+            ]);
+        }
 
         return back()->with('success', 'Lowongan ditolak');
     }
@@ -93,6 +132,27 @@ class AdminController extends Controller
             ->get();
 
         return view('admin.perusahaan', compact('lowongans'));
+    }
+
+    public function pengajuan(Request $request)
+    {
+        if (!session('admin_logged_in')) {
+            return redirect()->route('admin.login');
+        }
+
+        $keyword = $request->keyword;
+
+        $lowongans = Lowongan::with('perusahaan')
+            ->when($keyword, function ($query) use ($keyword) {
+                $query->where('posisi', 'ILIKE', "%$keyword%")
+                    ->orWhereHas('perusahaan', function ($q) use ($keyword) {
+                        $q->where('nama_perusahaan', 'ILIKE', "%$keyword%");
+                    });
+            })
+            ->orderBy('lowongan_id', 'desc')
+            ->get();
+
+        return view('admin.pengajuan', compact('lowongans'));
     }
 
 }

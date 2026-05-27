@@ -27,20 +27,21 @@
             <label class="form-label fw-semibold">
                 Pendidikan Terakhir <span class="text-danger">*</span>
             </label>
-            <select name="pendidikan_terakhir"
-                    class="form-select"
-                    required>
-                <option value="" disabled {{ old('pendidikan_terakhir') ? '' : 'selected' }}>
-                    Pilih Pendidikan
-                </option>
-                <option value="SD">SD</option>
-                <option value="SMP">SMP</option>
-                <option value="SMA/SMK">SMA/SMK</option>
-                <option value="Diploma">Diploma (D1/D2/D3)</option>
-                <option value="Sarjana">Sarjana (S1)</option>
-                <option value="Magister">Magister (S2)</option>
-                <option value="Doktor">Doktor (S3)</option>
-            </select>
+        <select name="pendidikan_terakhir"
+                id="pendidikan_terakhir"
+                class="form-select"
+                required>
+            <option value="" disabled {{ old('pendidikan_terakhir') ? '' : 'selected' }}>
+                Pilih Pendidikan
+            </option>
+            <option value="SD" {{ old('pendidikan_terakhir') == 'SD' ? 'selected' : '' }}>SD</option>
+            <option value="SMP" {{ old('pendidikan_terakhir') == 'SMP' ? 'selected' : '' }}>SMP</option>
+            <option value="SMA/SMK" {{ old('pendidikan_terakhir') == 'SMA/SMK' ? 'selected' : '' }}>SMA/SMK</option>
+            <option value="Diploma" {{ old('pendidikan_terakhir') == 'Diploma' ? 'selected' : '' }}>Diploma (D1/D2/D3)</option>
+            <option value="Sarjana" {{ old('pendidikan_terakhir') == 'Sarjana' ? 'selected' : '' }}>Sarjana (S1)</option>
+            <option value="Magister" {{ old('pendidikan_terakhir') == 'Magister' ? 'selected' : '' }}>Magister (S2)</option>
+            <option value="Doktor" {{ old('pendidikan_terakhir') == 'Doktor' ? 'selected' : '' }}>Doktor (S3)</option>
+        </select>
         </div>
 
         {{-- Institusi --}}
@@ -56,17 +57,20 @@
                    required>
         </div>
 
-        {{-- Jurusan --}}
-        <div class="mb-3">
-            <label class="form-label fw-semibold">
+        {{-- Jurusan (hanya tampil jika bukan SD / SMP) --}}
+        <div class="mb-3" id="jurusan_wrapper"
+             style="{{ in_array(old('pendidikan_terakhir'), ['SD','SMP']) ? 'display:none;' : '' }}">
+            <label class="form-label fw-semibold" for="jurusan">
                 Jurusan <span class="text-danger">*</span>
             </label>
             <input type="text"
+                   id="jurusan"
                    name="jurusan"
                    class="form-control"
                    value="{{ old('jurusan') }}"
                    placeholder="Masukkan jurusan"
-                   required>
+                   {{ !in_array(old('pendidikan_terakhir'), ['SD','SMP']) ? 'required' : '' }}>
+            <small class="text-muted">Contoh: Teknik Informatika, Akuntansi, dsb.</small>
         </div>
 
         {{-- Tahun Mulai --}}
@@ -109,4 +113,42 @@
 
     </form>
 </div>
+
+@push('body')
+<script>
+(function () {
+    // Daftar pendidikan yang TIDAK menampilkan field Jurusan
+    const tanpaJurusan = ['SD', 'SMP'];
+
+    const selectPendidikan = document.getElementById('pendidikan_terakhir');
+    const jurusanWrapper   = document.getElementById('jurusan_wrapper');
+    const jurusanInput     = document.getElementById('jurusan');
+
+    if (!selectPendidikan || !jurusanWrapper || !jurusanInput) return;
+
+    function toggleJurusan() {
+        const val = selectPendidikan.value;
+        if (tanpaJurusan.includes(val)) {
+            // Sembunyikan & nonaktifkan field Jurusan
+            jurusanWrapper.style.display  = 'none';
+            jurusanInput.required         = false;
+            jurusanInput.disabled         = true;
+            jurusanInput.value            = '';   // kosongkan agar tidak terkirim
+        } else {
+            // Tampilkan & aktifkan kembali
+            jurusanWrapper.style.display  = '';
+            jurusanInput.required         = true;
+            jurusanInput.disabled         = false;
+        }
+    }
+
+    // Jalankan saat halaman dimuat (untuk old() value saat validasi gagal)
+    toggleJurusan();
+
+    // Jalankan setiap kali pilihan berubah
+    selectPendidikan.addEventListener('change', toggleJurusan);
+})();
+</script>
+@endpush
+
 @endsection
