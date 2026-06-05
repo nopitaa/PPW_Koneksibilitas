@@ -22,7 +22,13 @@
             {{-- Link untuk Diproses --}}
             <a href="{{ route('status.lamaran', ['status' => 'Diproses']) }}" 
                class="nav-link me-4 {{ $currentStatus == 'Diproses' ? 'text-dark fw-bold border-bottom border-primary border-3 pb-2' : 'text-muted' }}">
-               Diproses
+               Sedang Diproses
+            </a>
+
+            {{-- Link untuk Diterima --}}
+            <a href="{{ route('status.lamaran', ['status' => 'Diterima']) }}" 
+               class="nav-link me-4 {{ $currentStatus == 'Diterima' ? 'text-dark fw-bold border-bottom border-primary border-3 pb-2' : 'text-muted' }}">
+               Diterima
             </a>
 
             {{-- Link untuk Ditolak --}}
@@ -51,11 +57,13 @@
                             </div>
                             <div>
                                 @if($item->status == 'Terkirim')
-                                    <span class="badge rounded-pill px-3 py-2" style="background-color: #E3F2FD; color: #2196F3;">Terkirim</span>
+                                    <span class="badge rounded-pill px-3 py-2" style="background-color:#E3F2FD; color:#2196F3;">Terkirim</span>
                                 @elseif($item->status == 'Diproses')
-                                    <span class="badge rounded-pill px-3 py-2" style="background-color: #E8F5E9; color: #4CAF50;">Diproses</span>
+                                    <span class="badge rounded-pill px-3 py-2" style="background-color:#FFF8E1; color:#F59E0B;">Sedang Diproses</span>
+                                @elseif($item->status == 'Diterima')
+                                    <span class="badge rounded-pill px-3 py-2" style="background-color:#E8F5E9; color:#4CAF50;">Diterima</span>
                                 @elseif($item->status == 'Ditolak')
-                                    <span class="badge rounded-pill px-3 py-2" style="background-color: #FFEBEE; color: #F44336;">Ditolak</span>
+                                    <span class="badge rounded-pill px-3 py-2" style="background-color:#FFEBEE; color:#F44336;">Ditolak</span>
                                 @else
                                     <span class="badge bg-secondary rounded-pill px-3 py-2">{{ $item->status }}</span>
                                 @endif

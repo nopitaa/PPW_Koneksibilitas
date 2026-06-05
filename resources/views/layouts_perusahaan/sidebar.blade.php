@@ -23,10 +23,19 @@
                     href="/informasi-lowongan"> <i class="ni ni-single-copy-04 text-dark text-sm opacity-10 me-2"></i>
                     <span class="nav-link-text ms-1">Data lowongan</span> </a> </li>
 
+            {{--  Link Data Pelamar --}}
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('data-pelamar') ? 'active' : '' }}" href="/data-pelamar">
+                    <i class="ni ni-single-02 text-dark text-sm opacity-10 me-2"></i>
+                    <span class="nav-link-text ms-1">Data Pelamar</span>
+                </a>
+            </li>
+
             {{--  Link Logout --}}
             <li class="nav-item"> <a class="nav-link" href="#" onclick="confirmLogout()"> <i
                         class="ni ni-user-run text-dark text-sm opacity-10 me-2"></i> <span
                         class="nav-link-text ms-1">Logout</span> </a> </li>
+
         </ul>
     </div>
 </aside>

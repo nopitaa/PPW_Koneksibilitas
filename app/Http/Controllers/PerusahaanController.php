@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Perusahaan;
 use App\Models\Lowongan;
+use App\Models\Lamaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -131,6 +132,51 @@ class PerusahaanController extends Controller
         return redirect()->route('informasi-lowongan');
     }
 
+    public function detailLowongan($id)
+    {
+        $perusahaan = Session::get('perusahaan');
+
+        $lowongan = Lowongan::where('lowongan_id', $id)
+            ->where('perusahaan_id', $perusahaan->perusahaan_id)
+            ->firstOrFail();
+
+        return view('perusahaan.detail', compact('lowongan'));
+    }
+
+    public function editLowongan($id)
+    {
+        $perusahaan = Session::get('perusahaan');
+
+        $lowongan = Lowongan::where('lowongan_id', $id)
+            ->where('perusahaan_id', $perusahaan->perusahaan_id)
+            ->firstOrFail();
+
+        return view('perusahaan.edit', compact('lowongan'));
+    }
+
+    public function updateLowongan(Request $request, $id)
+    {
+        $request->validate([
+            'posisi'             => 'required',
+            'persyaratan'        => 'required',
+            'kategori_pekerjaan' => 'required',
+        ]);
+
+        $perusahaan = Session::get('perusahaan');
+
+        $lowongan = Lowongan::where('lowongan_id', $id)
+            ->where('perusahaan_id', $perusahaan->perusahaan_id)
+            ->firstOrFail();
+
+        $lowongan->update([
+            'posisi'             => $request->posisi,
+            'persyaratan'        => $request->persyaratan,
+            'kategori_pekerjaan' => $request->kategori_pekerjaan,
+        ]);
+
+        return redirect()->route('informasi-lowongan');
+    }
+
     public function deleteLowongan($id)
     {
         $perusahaan = Session::get('perusahaan');
@@ -143,5 +189,52 @@ class PerusahaanController extends Controller
         $lowongan->delete();
 
         return redirect()->route('informasi-lowongan');
+    }
+
+    // ─── DATA PELAMAR ────────────────────────────────────────────────
+
+    public function dataPelamar()
+    {
+        if (!Session::has('perusahaan')) {
+            return redirect()->route('login-perusahaan');
+        }
+
+        $perusahaan = Session::get('perusahaan');
+
+        // Ambil semua lowongan milik perusahaan beserta pelamar & data user-nya
+        $lowongans = Lowongan::where('perusahaan_id', $perusahaan->perusahaan_id)
+            ->with(['lamaran' => function ($query) {
+                $query->with('user')->orderBy('updated_at', 'desc');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('perusahaan.pelamar', compact('lowongans', 'perusahaan'));
+    }
+
+    public function updateStatusLamaran(Request $request, $id)
+    {
+        if (!Session::has('perusahaan')) {
+            return redirect()->route('login-perusahaan');
+        }
+
+        $request->validate([
+            'status' => 'required|in:Terkirim,Diproses,Diterima,Ditolak',
+        ]);
+
+        $perusahaan = Session::get('perusahaan');
+
+        // Pastikan lamaran ini milik lowongan yang dimiliki perusahaan yang login
+        $lamaran = Lamaran::whereHas('lowongan', function ($query) use ($perusahaan) {
+                $query->where('perusahaan_id', $perusahaan->perusahaan_id);
+            })
+            ->where('lamaran_id', $id)
+            ->firstOrFail();
+
+        $lamaran->status     = $request->status;
+        $lamaran->updated_at = now();
+        $lamaran->save();
+
+        return redirect()->back()->with('success', 'Status lamaran berhasil diperbarui.');
     }
 }

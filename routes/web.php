@@ -127,6 +127,11 @@ Route::delete('/informasi-lowongan/delete/{id}',[PerusahaanController::class, 'd
 Route::get('/register-perusahaan', [PerusahaanController::class, 'showRegister'])->name('register-perusahaan');
 Route::post('/register-perusahaan', [PerusahaanController::class, 'register'])->name('register-perusahaan.process');
 
+// Data Pelamar & Update Status
+Route::get('/data-pelamar', [PerusahaanController::class, 'dataPelamar'])->name('data-pelamar');
+Route::post('/perusahaan/lamaran/{id}/status', [PerusahaanController::class, 'updateStatusLamaran'])->name('update-status-lamaran');
+
+
 
 
 //admin
