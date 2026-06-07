@@ -87,30 +87,34 @@ Route::middleware('auth')->group(function () {
 
 });
 
-// ROUTE PELATIHAN
-// SEO
-Route::get('/pelatihan/seo', function () { return view('user.pelatihan.seo'); })->name('seo');
-Route::get('/pelatihan/seo/materi1', function () { return view('user.pelatihan.materi1_seo'); })->name('materi1');
-Route::get('/pelatihan/seo/materi2', function () { return view('user.pelatihan.materi2_seo'); })->name('materi2');
-Route::get('/pelatihan/seo/materi3', function () { return view('user.pelatihan.materi3_seo'); })->name('materi3');
+// ROUTE PELATIHAN (dilindungi middleware auth)
+Route::middleware('auth')->group(function () {
 
-// Marketing
-Route::get('/pelatihan/marketing', function () { return view('user.pelatihan.marketing'); })->name('marketing');
-Route::get('/pelatihan/marketing/materi1', function () { return view('user.pelatihan.materi1_marketing'); })->name('marketing_materi1');
-Route::get('/pelatihan/marketing/materi2', function () { return view('user.pelatihan.materi2_marketing'); })->name('marketing_materi2');
-Route::get('/pelatihan/marketing/materi3', function () { return view('user.pelatihan.materi3_marketing'); })->name('marketing_materi3');
+    // SEO
+    Route::get('/pelatihan/seo', function () { return view('user.pelatihan.seo'); })->name('seo');
+    Route::get('/pelatihan/seo/materi1', function () { return view('user.pelatihan.materi1_seo'); })->name('materi1');
+    Route::get('/pelatihan/seo/materi2', function () { return view('user.pelatihan.materi2_seo'); })->name('materi2');
+    Route::get('/pelatihan/seo/materi3', function () { return view('user.pelatihan.materi3_seo'); })->name('materi3');
 
-// Copywritting
-Route::get('/pelatihan/copywritting', function () { return view('user.pelatihan.copywritting'); })->name('copywritting');
-Route::get('/pelatihan/copywritting/materi1', function () { return view('user.pelatihan.materi1_copywritting'); })->name('copywritting_materi1');
-Route::get('/pelatihan/copywritting/materi2', function () { return view('user.pelatihan.materi2_copywritting'); })->name('copywritting_materi2');
-Route::get('/pelatihan/copywritting/materi3', function () { return view('user.pelatihan.materi3_copywritting'); })->name('copywritting_materi3');
+    // Marketing
+    Route::get('/pelatihan/marketing', function () { return view('user.pelatihan.marketing'); })->name('marketing');
+    Route::get('/pelatihan/marketing/materi1', function () { return view('user.pelatihan.materi1_marketing'); })->name('marketing_materi1');
+    Route::get('/pelatihan/marketing/materi2', function () { return view('user.pelatihan.materi2_marketing'); })->name('marketing_materi2');
+    Route::get('/pelatihan/marketing/materi3', function () { return view('user.pelatihan.materi3_marketing'); })->name('marketing_materi3');
 
-// Data Analyst
-Route::get('/pelatihan/dataanalyst', function () { return view('user.pelatihan.dataanalyst'); })->name('dataanalyst');
-Route::get('/pelatihan/dataanalyst/materi1', function () { return view('user.pelatihan.materi1_dataanalyst'); })->name('dataanalyst_materi1');
-Route::get('/pelatihan/dataanalyst/materi2', function () { return view('user.pelatihan.materi2_dataanalyst'); })->name('dataanalyst_materi2');
-Route::get('/pelatihan/dataanalyst/materi3', function () { return view('user.pelatihan.materi3_dataanalyst'); })->name('dataanalyst_materi3');
+    // Copywritting
+    Route::get('/pelatihan/copywritting', function () { return view('user.pelatihan.copywritting'); })->name('copywritting');
+    Route::get('/pelatihan/copywritting/materi1', function () { return view('user.pelatihan.materi1_copywritting'); })->name('copywritting_materi1');
+    Route::get('/pelatihan/copywritting/materi2', function () { return view('user.pelatihan.materi2_copywritting'); })->name('copywritting_materi2');
+    Route::get('/pelatihan/copywritting/materi3', function () { return view('user.pelatihan.materi3_copywritting'); })->name('copywritting_materi3');
+
+    // Data Analyst
+    Route::get('/pelatihan/dataanalyst', function () { return view('user.pelatihan.dataanalyst'); })->name('dataanalyst');
+    Route::get('/pelatihan/dataanalyst/materi1', function () { return view('user.pelatihan.materi1_dataanalyst'); })->name('dataanalyst_materi1');
+    Route::get('/pelatihan/dataanalyst/materi2', function () { return view('user.pelatihan.materi2_dataanalyst'); })->name('dataanalyst_materi2');
+    Route::get('/pelatihan/dataanalyst/materi3', function () { return view('user.pelatihan.materi3_dataanalyst'); })->name('dataanalyst_materi3');
+
+});
 
 // ROUTE BAGIAN PERUSAHAAN
 Route::get('/login-penyedia', [PerusahaanController::class, 'showLogin'])->name('login-perusahaan');

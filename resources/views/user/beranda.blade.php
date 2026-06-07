@@ -78,9 +78,18 @@
                         <p class="text-muted small flex-grow-1">
                             Kelas memahami konsep dasar Search Engine Optimization (SEO)
                         </p>
+                        @auth
                         <a href="{{ route('seo') }}" class="btn btn-primary w-100 btn-sm mt-auto">
                             Ikuti Pelatihan
                         </a>
+                        @else
+                        <button type="button"
+                            class="btn btn-primary w-100 btn-sm mt-auto btn-login-pelatihan"
+                            data-login-url="{{ route('login') }}"
+                            data-pelatihan-url="{{ route('seo') }}">
+                            Ikuti Pelatihan
+                        </button>
+                        @endauth
                     </div>
                 </div>
             </div>
@@ -94,9 +103,18 @@
                         <p class="text-muted small flex-grow-1">
                             Kelas ini membahas strategi social media marketing
                         </p>
+                        @auth
                         <a href="{{ route('marketing') }}" class="btn btn-primary w-100 btn-sm mt-auto">
                             Ikuti Pelatihan
                         </a>
+                        @else
+                        <button type="button"
+                            class="btn btn-primary w-100 btn-sm mt-auto btn-login-pelatihan"
+                            data-login-url="{{ route('login') }}"
+                            data-pelatihan-url="{{ route('marketing') }}">
+                            Ikuti Pelatihan
+                        </button>
+                        @endauth
                     </div>
                 </div>
             </div>
@@ -110,9 +128,18 @@
                         <p class="text-muted small flex-grow-1">
                             Kelas ini membahas cara membuat tulisan persuasif untuk iklan.
                         </p>
+                        @auth
                         <a href="{{ route('copywritting') }}" class="btn btn-primary w-100 btn-sm mt-auto">
                             Ikuti Pelatihan
                         </a>
+                        @else
+                        <button type="button"
+                            class="btn btn-primary w-100 btn-sm mt-auto btn-login-pelatihan"
+                            data-login-url="{{ route('login') }}"
+                            data-pelatihan-url="{{ route('copywritting') }}">
+                            Ikuti Pelatihan
+                        </button>
+                        @endauth
                     </div>
                 </div>
             </div>
@@ -126,9 +153,18 @@
                         <p class="text-muted small flex-grow-1">
                             Kelas ini membahas konsep data, serta pengantar tools seperti Google Sheet.
                         </p>
+                        @auth
                         <a href="{{ route('dataanalyst') }}" class="btn btn-primary w-100 btn-sm mt-auto">
                             Ikuti Pelatihan
                         </a>
+                        @else
+                        <button type="button"
+                            class="btn btn-primary w-100 btn-sm mt-auto btn-login-pelatihan"
+                            data-login-url="{{ route('login') }}"
+                            data-pelatihan-url="{{ route('dataanalyst') }}">
+                            Ikuti Pelatihan
+                        </button>
+                        @endauth
                     </div>
                 </div>
             </div>
@@ -162,6 +198,30 @@
                 showConfirmButton: false,
             });
         @endif
+
+        // Alert Login Diperlukan untuk tombol Ikuti Pelatihan
+        document.querySelectorAll('.btn-login-pelatihan').forEach(function (button) {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                const loginUrl = this.dataset.loginUrl;
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Login Diperlukan',
+                    text: 'Silakan login terlebih dahulu untuk mengikuti pelatihan.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Login Sekarang',
+                    cancelButtonText: 'Nanti',
+                    confirmButtonColor: '#0d6efd',
+                    cancelButtonColor: '#6c757d'
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        window.location.href = loginUrl;
+                    }
+                });
+            });
+        });
     </script>
 
 @endsection
