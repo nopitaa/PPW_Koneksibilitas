@@ -30,7 +30,7 @@
         border-radius: 14px;
         border: 1px solid #e5e7eb;
         background: #fff;
-        box-shadow: 0 2px 8px rgba(0,0,0,.06);
+        box-shadow: 0 2px 8px rgba(255, 255, 255, 0.06);
         margin-bottom: 1.25rem;
         overflow: hidden;
     }
